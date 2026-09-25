@@ -1,0 +1,92 @@
+---
+import { profile, links } from '../data/profile';
+
+const external = (href: string) => href.startsWith('http');
+---
+
+<section id="contact" class="contact grain" aria-labelledby="contact-title">
+  <div class="wrap contact__inner">
+    <div class="contact__head">
+      <p class="tag contact__tag">open to work</p>
+      <h2 id="contact-title">Let's<br /> talk</h2>
+    </div>
+    <div class="contact__body">
+      <p class="contact__lede">
+        I'm looking for an entry-level role in security engineering or SOC / detection work. If you're hiring, or want a walkthrough of any of the code, email me or reach out on LinkedIn.
+      </p>
+      <a class="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+      <ul class="contact__links">
+        {links.filter((l) => l.label !== 'Email').map((l) => (
+          <li>
+            <a class="btn" href={l.href} {...(external(l.href) ? { rel: 'noopener noreferrer', target: '_blank' } : {})}>
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    isolation: isolate;
+    background: var(--ink);
+    color: var(--white);
+    padding-block: var(--space-2xl);
+  }
+  .contact__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: end;
+  }
+  .contact__tag {
+    --sq: var(--mint);
+    margin-bottom: var(--space-m);
+  }
+  .contact h2 {
+    margin: 0;
+    font-size: clamp(3.6rem, 1.6rem + 7vw, 9rem);
+    line-height: 0.84;
+  }
+  .contact__lede {
+    color: rgb(255 255 255 / 0.85);
+    font-size: var(--step-1);
+    line-height: 1.45;
+    max-width: 40ch;
+  }
+  .contact__email {
+    display: inline-block;
+    margin: var(--space-s) 0 var(--space-l);
+    font-weight: 800;
+    font-variation-settings: var(--wdth-heading);
+    font-size: clamp(1.5rem, 0.9rem + 2.4vw, 2.8rem);
+    line-height: 1.05;
+    color: var(--mint);
+    text-decoration-color: var(--mint);
+    overflow-wrap: anywhere;
+  }
+  .contact__email:hover {
+    color: var(--white);
+    text-decoration-color: var(--white);
+  }
+  .contact__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+  .contact :focus-visible {
+    outline-color: var(--white);
+  }
+
+  @media (max-width: 52rem) {
+    .contact__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

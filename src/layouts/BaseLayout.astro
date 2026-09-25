@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -32,5 +33,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <main id="main">
       <slot />
     </main>
+    <Footer />
   </body>
 </html>

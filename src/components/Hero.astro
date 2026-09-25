@@ -32,15 +32,17 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
 
   <div class="hero__copy wrap">
     <p class="tag hero__tag">cybersecurity × networking × ai</p>
-    <h1 id="hero-title">Ammar<br /> Badlawala</h1>
+    <h1 id="hero-title">
+      <span class="visually-hidden">Ammar Badlawala: </span>Build it.<br /> Break it.<br /> <span class="hero__hl">Fix it.</span>
+    </h1>
     <div class="hero__aside">
       <p class="hero__lede">
-        I build things to understand them, break them to learn how they fail, and automate what I can to make them better.
+        I'm <strong>Ammar Badlawala</strong>, a B.Sc. IT graduate working toward security engineering by shipping real security platforms, then attacking them to learn exactly how they fail.
       </p>
-      <p class="hero__meta">B.Sc. IT graduate, early career, shipping real security tools.</p>
+      <p class="hero__meta">Open to entry-level security engineering and SOC / detection roles.</p>
       <div class="hero__actions">
         <a class="btn btn--ink" href="#work">See the work</a>
-        <a class="btn" href="#about">About me</a>
+        <a class="btn" href="#contact">Get in touch</a>
       </div>
     </div>
   </div>
@@ -249,13 +251,23 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
   }
   .hero__copy h1 {
     margin: 0 0 var(--space-m);
-    /* sized so BADLAWALA fills the left column (~42vw) and never runs into the diorama */
-    font-size: clamp(4.2rem, 0.8rem + 8.6vw, 10.5rem);
-    line-height: 0.84;
-    letter-spacing: -0.01em;
+    font-size: clamp(3.4rem, 1rem + 5.6vw, 7.4rem);
+    line-height: 0.86;
+    letter-spacing: -0.005em;
+  }
+  .hero__hl {
+    display: inline-block;
+    background: var(--white);
+    padding: 0.04em 0.14em 0;
+    margin-left: -0.14em;
+    border-radius: 0.08em;
+    box-shadow: var(--shadow-raised);
+  }
+  .hero__lede strong {
+    font-weight: 700;
   }
   .hero__aside {
-    max-width: 27rem;
+    max-width: 30rem;
   }
   .hero__lede {
     font-size: var(--step-1);

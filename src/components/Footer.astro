@@ -1,0 +1,129 @@
+---
+import { profile, links } from '../data/profile';
+
+const year = new Date().getFullYear();
+const external = (href: string) => href.startsWith('http');
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div class="footer__id">
+      <a class="footer__name" href="/">{profile.name}</a>
+      <p class="footer__tagline">{profile.tagline}</p>
+    </div>
+
+    <nav class="footer__col" aria-label="Footer">
+      <p class="footer__label data">site</p>
+      <ul>
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/roadmap">Roadmap</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer__col">
+      <p class="footer__label data">elsewhere</p>
+      <ul>
+        {links.map((l) => (
+          <li>
+            <a href={l.href} {...(external(l.href) ? { rel: 'noopener noreferrer', target: '_blank' } : {})}>{l.label}</a>
+          </li>
+        ))}
+        {profile.resume && <li><a href={profile.resume}>Resume</a></li>}
+      </ul>
+    </div>
+
+    <blockquote class="footer__quote">
+      <p>Consistency doesn't ask how I feel about it. It just asks if I showed up.</p>
+    </blockquote>
+  </div>
+
+  <div class="wrap footer__base">
+    <p>© {year} {profile.name}</p>
+    <p>Built with Astro and Three.js.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--paper);
+    padding-block: var(--space-xl) var(--space-l);
+    font-size: var(--step--1);
+  }
+  .footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) auto auto minmax(0, 1.4fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+    padding-bottom: var(--space-l);
+    border-bottom: 2px solid var(--ink);
+  }
+  .footer__name {
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    text-transform: uppercase;
+    font-size: var(--step-2);
+    line-height: 0.9;
+    text-decoration: none;
+  }
+  .footer__tagline {
+    margin-top: var(--space-xs);
+    color: var(--ink-2);
+  }
+  .footer__label {
+    margin: 0 0 var(--space-xs);
+    color: var(--ink-2);
+  }
+  .footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+  .footer__col a {
+    font-weight: 600;
+    font-size: var(--step-0);
+    text-decoration-thickness: 2px;
+    text-decoration-color: transparent;
+  }
+  .footer__col a:hover {
+    text-decoration-color: var(--world-deep);
+  }
+  .footer__quote {
+    margin: 0;
+  }
+  .footer__quote p {
+    font-size: var(--step-0);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--ink-2);
+    max-width: 30ch;
+    margin-left: auto;
+  }
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    padding-top: var(--space-m);
+    color: var(--ink-2);
+  }
+  .footer__base p {
+    margin: 0;
+  }
+
+  @media (max-width: 52rem) {
+    .footer__inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .footer__id,
+    .footer__quote {
+      grid-column: 1 / -1;
+    }
+    .footer__quote p {
+      margin-left: 0;
+    }
+  }
+</style>

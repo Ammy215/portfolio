@@ -43,7 +43,7 @@ h1,
   line-height: var(--leading-display);
 }
 h2 {
-  font-size: var(--step-4);
+  font-size: clamp(2.6rem, 1.3rem + 4.4vw, 5.8rem);
   font-weight: 900;
   font-variation-settings: var(--wdth-display);
   line-height: var(--leading-display);

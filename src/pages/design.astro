@@ -2,15 +2,8 @@
 // Internal style tile for design review. Not linked, not in the sitemap, noindex. Removed at launch.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-
-const swatches = [
-  { name: 'cyan', hex: '#38bdf8', note: 'network, from the profile' },
-  { name: 'mint', hex: '#4ff59a', note: 'logs, from #39ff88' },
-  { name: 'amber', hex: '#ffb454', note: 'status, from the profile' },
-  { name: 'ink', hex: '#0b1620', note: 'all type' },
-  { name: 'paper', hex: '#eef2f0', note: 'reading sections' },
-  { name: 'white', hex: '#ffffff', note: 'objects, cards' },
-];
+import About from '../components/About.astro';
+import Contact from '../components/Contact.astro';
 ---
 
 <BaseLayout title="Style tile" description="Internal design review page." noindex>
@@ -104,27 +97,7 @@ const swatches = [
     </div>
   </section>
 
-  <!-- ============ ABOUT: statement + stickers ============ -->
-  <section id="about" class="about wrap" aria-labelledby="about-title">
-    <div class="about__text">
-      <h2 id="about-title" class="about__statement">
-        I build things <mark>to understand</mark> them.
-      </h2>
-      <p class="about__body">
-        B.Sc. Information Technology, CGPA 9.84 (A+). No industry job yet. I'm on a self-directed path into cybersecurity engineering, which means building real, working tools instead of stopping at tutorials, then attacking them to see where they fail.
-      </p>
-    </div>
-    <div class="about__stickers" aria-label="Photo and pixel-art character (coming soon)">
-      <figure class="sticker sticker--photo">
-        <div class="sticker__ph">Photo<br />coming</div>
-        <figcaption class="data">the real person</figcaption>
-      </figure>
-      <figure class="sticker sticker--pixel">
-        <div class="sticker__ph sticker__ph--pixel">Pixel<br />character</div>
-        <figcaption class="data">the build identity</figcaption>
-      </figure>
-    </div>
-  </section>
+  <About />
 
   <!-- ============ QUOTE: full-bleed accent band ============ -->
   <section class="quote-band grain" aria-label="Quote">
@@ -136,20 +109,7 @@ const swatches = [
     </blockquote>
   </section>
 
-  <!-- ============ Review key ============ -->
-  <section class="key wrap" aria-label="Design key">
-    <ul class="swatches">
-      {swatches.map((s) => (
-        <li>
-          <span class="swatch" style={`background:${s.hex}`}></span>
-          <span class="swatch__name">{s.name}</span>
-          <span class="data">{s.hex}</span>
-          <span class="swatch__note">{s.note}</span>
-        </li>
-      ))}
-    </ul>
-    <p class="data key__type">Archivo, condensed 62 wdth / 900 for display, 100 wdth / 400-500 for reading. Departure Mono for data.</p>
-  </section>
+  <Contact />
 
   <!-- Review-only: switch the world colour -->
   <div class="world-switch" role="group" aria-label="World colour">
@@ -298,82 +258,6 @@ const swatches = [
     line-height: 1.35;
   }
 
-  /* ---------- about ---------- */
-  .about {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: var(--space-xl);
-    align-items: center;
-    padding-block: var(--space-2xl);
-  }
-  .about__statement {
-    font-size: clamp(3rem, 1.6rem + 6vw, 7.5rem);
-  }
-  .about__statement mark {
-    background: var(--world);
-    color: var(--ink);
-    padding: 0 0.12em;
-    border-radius: 0.1em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
-  .about__body {
-    font-size: var(--step-1);
-    line-height: 1.5;
-    color: var(--ink-2);
-    max-width: 42ch;
-  }
-  .about__stickers {
-    position: relative;
-    min-height: 26rem;
-  }
-  .sticker {
-    position: absolute;
-    margin: 0;
-    padding: 0.7rem 0.7rem 0.9rem;
-    background: var(--white);
-    border-radius: 18px;
-    box-shadow: var(--shadow-lifted);
-  }
-  .sticker figcaption {
-    margin-top: 0.6rem;
-    font-size: var(--step--1);
-    text-align: center;
-  }
-  .sticker--photo {
-    width: 64%;
-    left: 0;
-    top: 0;
-    rotate: -4deg;
-  }
-  .sticker--pixel {
-    width: 52%;
-    right: 0;
-    bottom: 0;
-    rotate: 5deg;
-  }
-  .sticker__ph {
-    aspect-ratio: 4 / 5;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    background: var(--paper);
-    font-weight: 900;
-    font-variation-settings: var(--wdth-display);
-    text-transform: uppercase;
-    font-size: 1.8rem;
-    line-height: 0.9;
-    color: var(--ink-2);
-  }
-  .sticker__ph--pixel {
-    aspect-ratio: 1;
-    background:
-      conic-gradient(from 90deg at 1px 1px, transparent 90deg, rgb(11 22 32 / 0.12) 0) 0 0 / 16px 16px,
-      var(--mint);
-    color: var(--ink);
-  }
-
   /* ---------- quote band ---------- */
   .quote-band {
     position: relative;
@@ -397,42 +281,6 @@ const swatches = [
   .quote__soft {
     font-weight: 500;
     display: block;
-  }
-
-  /* ---------- key ---------- */
-  .key {
-    padding-block: var(--space-xl);
-  }
-  .swatches {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-m);
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-    gap: var(--space-s);
-  }
-  .swatches li {
-    display: grid;
-    gap: 0.1rem;
-    font-size: var(--step--1);
-  }
-  .swatch {
-    height: 4rem;
-    border-radius: var(--radius-inset);
-    box-shadow: inset 0 0 0 1px rgb(11 22 32 / 0.1);
-    margin-bottom: 0.4rem;
-  }
-  .swatch__name {
-    font-weight: 800;
-    text-transform: uppercase;
-    font-variation-settings: var(--wdth-heading);
-  }
-  .swatch__note {
-    color: var(--ink-2);
-  }
-  .key__type {
-    font-size: var(--step--1);
-    color: var(--ink-2);
   }
 
   /* ---------- world switch (review only) ---------- */
@@ -475,13 +323,6 @@ const swatches = [
     }
     .bento {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .about {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .about__stickers {
-      min-height: 24rem;
-      max-width: 26rem;
     }
   }
   @media (max-width: 40rem) {

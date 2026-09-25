@@ -1,0 +1,34 @@
+// Real profile data, from the master brief §2. One source for header, contact and footer.
+export const profile = {
+  name: 'Ammar Badlawala',
+  tagline: 'Cybersecurity × Networking × AI',
+  email: 'ammar.badlawala@gmail.com',
+  lookingFor: 'Entry-level security engineering or SOC / detection role',
+  // Resume link stays hidden until the file exists.
+  resume: null as string | null,
+};
+
+export const links = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ammar-badlawala-a38ba739a/' },
+  { label: 'GitHub', href: 'https://github.com/Ammy215' },
+  { label: 'TryHackMe', href: 'https://tryhackme.com/p/ammar.badlawala' },
+  { label: 'Email', href: 'mailto:ammar.badlawala@gmail.com' },
+];
+
+export const certifications = [
+  {
+    issuer: 'Cisco',
+    items: ['Endpoint Security', 'Network Defense', 'Networking Basics', 'Introduction to Cybersecurity'],
+  },
+  {
+    issuer: 'Coursera',
+    items: [
+      'AI For Everyone',
+      'Launching into Machine Learning',
+      'Introduction to AI and Machine Learning on Google Cloud',
+      'Getting Started with Linux Terminal',
+      'Foundations of Cybersecurity',
+      'Introduction to Networking and Cloud Computing',
+    ],
+  },
+];
