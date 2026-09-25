@@ -3,7 +3,8 @@ export const profile = {
   name: 'Ammar Badlawala',
   tagline: 'Cybersecurity × Networking × AI',
   email: 'ammar.badlawala@gmail.com',
-  lookingFor: 'Entry-level security engineering or SOC / detection role',
+  lookingFor: 'Entry-level role in security engineering, SOC / detection, or networking',
+  openTo: 'Open to entry-level security engineering, SOC / detection and networking roles.',
   // Resume link stays hidden until the file exists.
   resume: null as string | null,
 };

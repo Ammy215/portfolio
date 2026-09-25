@@ -1,47 +1,75 @@
 ---
 import { profile, links } from '../data/profile';
+import { nodes } from '../data/graph';
+import { projectHref, projectHrefLabel } from '../data/projects';
 
-const year = new Date().getFullYear();
-const external = (href: string) => href.startsWith('http');
+const built = new Date();
+const year = built.getFullYear();
+const updated = built.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
+const isExternal = (href: string) => href.startsWith('http');
+// Order the project list like the work section: flagship first
+const order = ['mini-siem', 'netsentinel', 'threathunter', 'phishguard-ai', 'fileshield', 'honeyshield', 'intelligent-log-analyzer'];
+const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
 ---
 
 <footer class="footer">
-  <div class="wrap footer__inner">
-    <div class="footer__id">
-      <a class="footer__name" href="/">{profile.name}</a>
-      <p class="footer__tagline">{profile.tagline}</p>
+  <div class="wrap">
+    <div class="footer__status">
+      <p class="tag footer__tag">open to work</p>
+      <p class="footer__open">{profile.openTo}</p>
+      <a class="btn footer__top" href="#main">Back to top</a>
     </div>
 
-    <nav class="footer__col" aria-label="Footer">
-      <p class="footer__label data">site</p>
-      <ul>
-        <li><a href="/#work">Work</a></li>
-        <li><a href="/roadmap">Roadmap</a></li>
-        <li><a href="/#about">About</a></li>
-        <li><a href="/#contact">Contact</a></li>
-      </ul>
-    </nav>
+    <div class="footer__panel">
+      <div class="footer__id">
+        <a class="footer__name" href="/">{profile.name}</a>
+        <p class="footer__tagline">{profile.tagline}</p>
+        <blockquote class="footer__quote">
+          <p>Consistency doesn't ask how I feel about it. It just asks if I showed up.</p>
+        </blockquote>
+      </div>
 
-    <div class="footer__col">
-      <p class="footer__label data">elsewhere</p>
-      <ul>
-        {links.map((l) => (
-          <li>
-            <a href={l.href} {...(external(l.href) ? { rel: 'noopener noreferrer', target: '_blank' } : {})}>{l.label}</a>
-          </li>
-        ))}
-        {profile.resume && <li><a href={profile.resume}>Resume</a></li>}
-      </ul>
+      <nav class="footer__col" aria-label="Site">
+        <p class="footer__label data">site</p>
+        <ul>
+          <li><a href="/#work">Work</a></li>
+          <li><a href="/roadmap">Roadmap</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="Projects">
+        <p class="footer__label data">projects</p>
+        <ul>
+          {projects.map((p) => (
+            <li>
+              <a href={projectHref(p.slug)} {...ext}>{p.name}</a>
+              <span class="footer__kind data">{projectHrefLabel(p.slug) === 'Live site' ? 'live' : 'code'}</span>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="Elsewhere">
+        <p class="footer__label data">elsewhere</p>
+        <ul>
+          {links.map((l) => (
+            <li>
+              <a href={l.href} {...(isExternal(l.href) ? ext : {})}>{l.label}</a>
+            </li>
+          ))}
+          {profile.resume && <li><a href={profile.resume}>Resume</a></li>}
+        </ul>
+      </nav>
     </div>
 
-    <blockquote class="footer__quote">
-      <p>Consistency doesn't ask how I feel about it. It just asks if I showed up.</p>
-    </blockquote>
-  </div>
-
-  <div class="wrap footer__base">
-    <p>© {year} {profile.name}</p>
-    <p>Built with Astro and Three.js.</p>
+    <div class="footer__base">
+      <p>© {year} {profile.name}</p>
+      <p class="data">last updated {updated}</p>
+      <p>Built with Astro and Three.js.</p>
+    </div>
   </div>
 </footer>
 
@@ -51,28 +79,68 @@ const external = (href: string) => href.startsWith('http');
     padding-block: var(--space-xl) var(--space-l);
     font-size: var(--step--1);
   }
-  .footer__inner {
+
+  .footer__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+    margin-bottom: var(--space-m);
+  }
+  .footer__tag {
+    --sq: var(--mint);
+    margin: 0;
+  }
+  .footer__open {
+    margin: 0;
+    font-size: var(--step-0);
+    font-weight: 600;
+  }
+  .footer__top {
+    margin-left: auto;
+    min-height: 2.5rem;
+    padding: 0.45rem 1.1rem;
+    font-size: var(--step--1);
+  }
+
+  .footer__panel {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) auto auto minmax(0, 1.4fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: start;
-    padding-bottom: var(--space-l);
-    border-bottom: 2px solid var(--ink);
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+    border-radius: var(--radius-card);
+    background: var(--white);
+    box-shadow: var(--shadow-raised);
   }
   .footer__name {
     font-weight: 900;
     font-variation-settings: var(--wdth-display);
     text-transform: uppercase;
-    font-size: var(--step-2);
-    line-height: 0.9;
+    font-size: var(--step-3);
+    line-height: 0.86;
     text-decoration: none;
   }
   .footer__tagline {
-    margin-top: var(--space-xs);
+    margin: var(--space-xs) 0 var(--space-l);
+    font-family: var(--font-data);
     color: var(--ink-2);
   }
+  .footer__quote {
+    margin: 0;
+    padding-left: var(--space-s);
+    border-left: 3px solid var(--world);
+  }
+  .footer__quote p {
+    margin: 0;
+    font-size: var(--step-0);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--ink-2);
+    max-width: 30ch;
+  }
+
   .footer__label {
-    margin: 0 0 var(--space-xs);
+    margin: 0 0 var(--space-s);
     color: var(--ink-2);
   }
   .footer__col ul {
@@ -80,33 +148,33 @@ const external = (href: string) => href.startsWith('http');
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0.35rem;
+    gap: 0.45rem;
+  }
+  .footer__col li {
+    line-height: 1.25;
   }
   .footer__col a {
     font-weight: 600;
     font-size: var(--step-0);
+    line-height: 1.25;
     text-decoration-thickness: 2px;
     text-decoration-color: transparent;
   }
   .footer__col a:hover {
     text-decoration-color: var(--world-deep);
   }
-  .footer__quote {
-    margin: 0;
-  }
-  .footer__quote p {
-    font-size: var(--step-0);
-    font-weight: 500;
-    line-height: 1.4;
+  .footer__kind {
+    margin-left: 0.4rem;
+    white-space: nowrap;
+    font-size: 0.72rem;
     color: var(--ink-2);
-    max-width: 30ch;
-    margin-left: auto;
   }
+
   .footer__base {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: var(--space-xs);
+    gap: var(--space-xs) var(--space-m);
     padding-top: var(--space-m);
     color: var(--ink-2);
   }
@@ -114,15 +182,19 @@ const external = (href: string) => href.startsWith('http');
     margin: 0;
   }
 
-  @media (max-width: 52rem) {
-    .footer__inner {
+  @media (max-width: 60rem) {
+    .footer__panel {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .footer__id,
-    .footer__quote {
+    .footer__id {
       grid-column: 1 / -1;
     }
-    .footer__quote p {
+  }
+  @media (max-width: 30rem) {
+    .footer__panel {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .footer__top {
       margin-left: 0;
     }
   }

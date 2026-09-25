@@ -4,6 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
+import { projectHref, projectHrefLabel } from '../data/projects';
+
+const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <BaseLayout title="Style tile" description="Internal design review page." noindex>
@@ -25,7 +28,8 @@ import Contact from '../components/Contact.astro';
           <span class="tag">correlation</span>
           <span class="tag tag--live">live</span>
         </div>
-        <h3 class="block__title block__title--xl"><a class="block__link" href="/projects/mini-siem">Mini SIEM</a></h3>
+        <h3 class="block__title block__title--xl"><a class="block__link" href={projectHref('mini-siem')} {...ext}>Mini SIEM</a></h3>
+        <p class="block__go data">{projectHrefLabel('mini-siem') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede">
           A SIEM built from scratch. Ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK IDs, and correlates one attacker's alerts into a single incident.
         </p>
@@ -42,7 +46,8 @@ import Contact from '../components/Contact.astro';
           <span class="tag">network traffic</span>
           <span class="tag tag--live">live</span>
         </div>
-        <h3 class="block__title"><a class="block__link" href="/projects/netsentinel">NetSentinel</a></h3>
+        <h3 class="block__title"><a class="block__link" href={projectHref('netsentinel')} {...ext}>NetSentinel</a></h3>
+        <p class="block__go data">{projectHrefLabel('netsentinel') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede support">
           Upload a PCAP, get scored flows back. Isolation Forest and One-Class SVM on real captured traffic, with RAG-grounded AI explaining each anomaly.
         </p>
@@ -52,7 +57,8 @@ import Contact from '../components/Contact.astro';
         <div class="block__top">
           <span class="tag">deception</span>
         </div>
-        <h3 class="block__title"><a class="block__link" href="/projects/honeyshield">HoneyShield</a></h3>
+        <h3 class="block__title"><a class="block__link" href={projectHref('honeyshield')} {...ext}>HoneyShield</a></h3>
+        <p class="block__go data">{projectHrefLabel('honeyshield') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede">Multi-protocol honeypot on raw asyncio sockets. Spots coordinated campaigns by ASN and time window.</p>
         <span class="tag tag--partial tag--wrap">http live; ssh, ftp, telnet built but not deployed</span>
       </article>
@@ -62,7 +68,8 @@ import Contact from '../components/Contact.astro';
           <span class="tag">logs</span>
           <span class="tag tag--progress">in progress</span>
         </div>
-        <h3 class="block__title"><a class="block__link" href="/projects/intelligent-log-analyzer">Log Analyzer</a></h3>
+        <h3 class="block__title"><a class="block__link" href={projectHref('intelligent-log-analyzer')} {...ext}>Log Analyzer</a></h3>
+        <p class="block__go data">{projectHrefLabel('intelligent-log-analyzer') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede">A 12-phase enterprise rebuild. Final QA and deploy still to come.</p>
       </article>
 
@@ -71,7 +78,8 @@ import Contact from '../components/Contact.astro';
           <span class="tag">web and urls</span>
           <span class="tag tag--live">live</span>
         </div>
-        <h3 class="block__title"><a class="block__link" href="/projects/phishguard-ai">phishguard&#8209;ai</a></h3>
+        <h3 class="block__title"><a class="block__link" href={projectHref('phishguard-ai')} {...ext}>phishguard&#8209;ai</a></h3>
+        <p class="block__go data">{projectHrefLabel('phishguard-ai') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede">Random Forest plus a 16-rule heuristic engine, shipped with a working Chrome extension.</p>
       </article>
 
@@ -80,7 +88,8 @@ import Contact from '../components/Contact.astro';
           <span class="tag tag--ghost">files</span>
           <span class="tag tag--live">live</span>
         </div>
-        <h3 class="block__title"><a class="block__link" href="/projects/fileshield">FileShield</a></h3>
+        <h3 class="block__title"><a class="block__link" href={projectHref('fileshield')} {...ext}>FileShield</a></h3>
+        <p class="block__go data">{projectHrefLabel('fileshield') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede">Hashing, entropy and YARA matching. My first shipped project, and my first real production outage.</p>
       </article>
 
@@ -89,7 +98,8 @@ import Contact from '../components/Contact.astro';
           <span class="tag">threat intel</span>
           <span class="tag tag--live">live, private repo</span>
         </div>
-        <h3 class="block__title"><a class="block__link" href="/projects/threathunter">ThreatHunter</a></h3>
+        <h3 class="block__title"><a class="block__link" href={projectHref('threathunter')} {...ext}>ThreatHunter</a></h3>
+        <p class="block__go data">{projectHrefLabel('threathunter') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
         <p class="block__lede">
           IOC search across IP, domain, hash and URL, fanned out to AbuseIPDB, OTX, IPInfo, VirusTotal and NIST NVD. 89 automated tests and an adversarial testing pass: 8 findings, each fixed and retested.
         </p>
@@ -178,8 +188,17 @@ import Contact from '../components/Contact.astro';
   .block--pale {
     background: var(--world-pale);
   }
+  .block__go {
+    margin: -0.2rem 0 0;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .block--ink .block__go {
+    color: rgb(255 255 255 / 0.75);
+  }
   .tag--wrap {
     white-space: normal;
+    border-radius: 12px;
     line-height: 1.25;
     align-self: flex-start;
   }

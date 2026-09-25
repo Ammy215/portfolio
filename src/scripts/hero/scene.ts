@@ -527,7 +527,8 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   });
   canvas.addEventListener('pointerleave', () => (hovered = null));
   canvas.addEventListener('click', () => {
-    if (hovered) window.location.href = `/projects/${hovered}`;
+    // defer to the matching signpost link, so the destination lives in one place (the markup)
+    if (hovered) labelEls.find((el) => el.dataset.slug === hovered)?.click();
   });
 
   // ---- sizing: on wide screens the scene sits right of the headline ----
