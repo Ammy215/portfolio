@@ -1,6 +1,7 @@
 // Where each project links to. Live URLs checked 2026-09-25 (all returned 200).
 // No live link: HoneyShield (its deployment is private to Ammar), Intelligent Log Analyzer (not deployed yet),
-// phishguard-ai (live URL not known yet). Those point to their public GitHub repos instead.
+// phishguard-ai (never deployed; runs locally on localhost, confirmed by Ammar 2026-09-25 and its README).
+// Those point to their public GitHub repos instead.
 // Once case-study pages exist, cards link there and these become the "Live demo" / "Code" links.
 
 export interface ProjectLinks {

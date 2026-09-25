@@ -152,6 +152,7 @@ kbd,
 .tag--live { --sq: var(--mint); }
 .tag--partial { --sq: var(--cyan); }
 .tag--progress { --sq: var(--amber); }
+.tag--local { --sq: var(--white); }
 .tag--ghost {
   background: rgb(255 255 255 / 0.55);
 }

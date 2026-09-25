@@ -24,7 +24,8 @@ Personal portfolio: Home, one case-study page per shipped project, Roadmap. Sour
 
 ## Content rules (non-negotiable)
 - Never invent jobs, internships, certs, stats, GitHub numbers, percentages, or skills. Missing info → placeholder + ask Ammar.
-- Statuses are exact: Log Analyzer = in progress; HoneyShield = HTTP honeypot live, SSH/FTP/Telnet built & tested but not deployed.
+- Statuses are exact: Log Analyzer = in progress; HoneyShield = HTTP honeypot live, SSH/FTP/Telnet built & tested but not deployed (live deployment is private, link the repo); phishguard-ai = runs locally, never deployed (overrides the brief's "Live").
+- Job search: entry-level security engineering, SOC / detection, or networking roles.
 - ThreatHunter repo is private: "happy to walk through the code or share access on request."
 - Graph edges in `src/data/graph.ts` only from documented shared facts.
 
