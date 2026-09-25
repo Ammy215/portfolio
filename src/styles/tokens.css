@@ -25,7 +25,7 @@
   /* Decorative only (particles, rules) — never used for text */
   --noise: #8c9aa2;
 
-  /* World: cyan by default, amber as the alternative */
+  /* World: the hue that floods the hero (locked to cyan, 2026-09-25); accent is its complement */
   --world: var(--cyan);
   --world-deep: var(--cyan-deep);
   --world-pale: var(--cyan-pale);
@@ -72,12 +72,4 @@
   --measure: 64ch;
   --page-max: 80rem;
   --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
-}
-
-:root[data-world='amber'] {
-  --world: var(--amber);
-  --world-deep: var(--amber-deep);
-  --world-pale: var(--amber-pale);
-  --accent: var(--cyan);
-  --accent-deep: var(--cyan-deep);
 }

@@ -142,26 +142,7 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
   </section>
 
   <Contact />
-
-  <!-- Review-only: switch the world colour -->
-  <div class="world-switch" role="group" aria-label="World colour">
-    <button type="button" data-world-btn="cyan" aria-pressed="true">Cyan world</button>
-    <button type="button" data-world-btn="amber" aria-pressed="false">Amber world</button>
-  </div>
 </BaseLayout>
-
-<script>
-  const btns = document.querySelectorAll<HTMLButtonElement>('[data-world-btn]');
-  const setWorld = (w: string) => {
-    if (w === 'cyan') delete document.documentElement.dataset.world;
-    else document.documentElement.dataset.world = w;
-    btns.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.worldBtn === w)));
-    document.dispatchEvent(new Event('worldchange'));
-  };
-  btns.forEach((b) => b.addEventListener('click', () => setWorld(b.dataset.worldBtn!)));
-  const fromUrl = new URLSearchParams(location.search).get('world');
-  if (fromUrl === 'amber') setWorld('amber');
-</script>
 
 <style>
   /* ---------- section header: huge left, small support right ---------- */
@@ -327,35 +308,6 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
   .quote__soft {
     font-weight: 500;
     display: block;
-  }
-
-  /* ---------- world switch (review only) ---------- */
-  .world-switch {
-    position: fixed;
-    right: 1rem;
-    bottom: 1rem;
-    z-index: 40;
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.3rem;
-    border-radius: var(--radius-chip);
-    background: var(--ink);
-    box-shadow: var(--shadow-lifted);
-  }
-  .world-switch button {
-    font: inherit;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border: 0;
-    border-radius: var(--radius-chip);
-    padding: 0.45rem 0.9rem;
-    background: transparent;
-    color: var(--white);
-    cursor: pointer;
-  }
-  .world-switch button[aria-pressed='true'] {
-    background: var(--white);
-    color: var(--ink);
   }
 
   @media (max-width: 60rem) {

@@ -5,17 +5,12 @@ import { profile } from '../data/profile';
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
-interface Props {
-  variant?: 'illustrated' | 'engineered';
-}
-const { variant = 'illustrated' } = Astro.props;
-
 const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l.id)! }));
 ---
 
 <section class="hero grain" aria-labelledby="hero-title">
   <!-- 3D diorama fills the section; everything readable is HTML on top of it -->
-  <div class="hero__stage" data-hero-stage data-variant={variant}>
+  <div class="hero__stage" data-hero-stage>
     <canvas class="hero__canvas" aria-hidden="true"></canvas>
     <div class="hero__labels" data-hero-labels>
       {nodes.map((n) => (
@@ -101,11 +96,8 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
     stage.classList.add('is-live');
     fallback.classList.add('visually-hidden');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // ?scene=engineered|illustrated overrides the default, for design comparison
-    const fromUrl = new URLSearchParams(location.search).get('scene');
-    const variant = fromUrl === 'engineered' || fromUrl === 'illustrated' ? fromUrl : (stage.dataset.variant as 'illustrated' | 'engineered');
     const boot = () =>
-      import('../scripts/hero/scene').then(({ initHero }) => initHero({ canvas, labels, reducedMotion, variant }));
+      import('../scripts/hero/scene').then(({ initHero }) => initHero({ canvas, labels, reducedMotion }));
     // keep Three.js off the critical path: text paints first
     if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1200 });
     else setTimeout(boot, 200);

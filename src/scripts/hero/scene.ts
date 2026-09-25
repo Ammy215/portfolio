@@ -1,4 +1,5 @@
-// Hero diorama: the seven projects as low-poly stations on a lit ground, arranged around a firewall.
+// Hero diorama: the seven projects as abstract, engineered stations on a lit ground, inside/outside a firewall.
+// Each station shows what the project does (filter, scanner, decoy...), not a pun on its name.
 // Outside the wall: what meets traffic first (decoy, network, URLs). Inside: analysis. Centre: correlation.
 // One orchestrated intro: stations drop in, the firewall builds, a wave of packets arrives. Most bounce
 // off the wall (noise); the few that pass a gate turn to signal and land on a station. Then it idles.
@@ -7,17 +8,13 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { nodes, hubs } from '../../data/graph';
 
-// 'illustrated' = literal icons (honey pot, fish, logs...). 'engineered' = abstract hardware-like modules.
-export type SceneVariant = 'illustrated' | 'engineered';
-
 interface Options {
   canvas: HTMLCanvasElement;
   labels: HTMLElement; // container holding <a data-slug="..."> elements
   reducedMotion: boolean;
-  variant?: SceneVariant;
 }
 
-// ---------- colour tokens (re-read when the page switches world colour) ----------
+// ---------- colour tokens (read from the CSS custom properties) ----------
 type Tok = 'white' | 'ink' | 'cyan' | 'mint' | 'amber' | 'amber-deep' | 'world' | 'world-deep' | 'accent';
 const readTok = (t: Tok) => getComputedStyle(document.documentElement).getPropertyValue(`--${t}`).trim();
 const painted: { m: THREE.Material & { color: THREE.Color }; tok: Tok }[] = [];
@@ -34,7 +31,6 @@ const M = {
   cyan: solid('cyan'),
   mint: solid('mint'),
   amber: solid('amber'),
-  wood: solid('amber-deep'),
   accent: solid('accent'),
   screenMint: glow('mint'),
   screenCyan: glow('cyan'),
@@ -58,27 +54,15 @@ interface StationDef {
 
 // camera looks from azimuth ~58°: far side of the scene is ~238°, screen-right ~328°, screen-left ~148°
 const defs: Record<string, StationDef> = {
-  'mini-siem': { angle: 0, r: 0, size: 3.3, height: 0.8, build: buildWorkstation },
-  threathunter: { angle: 182, r: R_IN, size: 2.1, height: 0.5, build: buildMagnifier },
-  fileshield: { angle: 290, r: R_IN, size: 2.1, height: 0.5, build: buildFiles },
-  'intelligent-log-analyzer': { angle: 18, r: R_IN + 0.3, size: 2.1, height: 0.5, build: buildLogs },
-  honeyshield: { angle: 208, r: R_OUT + 0.5, size: 2.2, height: 0.5, build: buildHoneypot },
+  'mini-siem': { angle: 0, r: 0, size: 3.3, height: 0.8, build: buildRack },
+  threathunter: { angle: 182, r: R_IN, size: 2.1, height: 0.5, build: buildScanner },
+  fileshield: { angle: 290, r: R_IN, size: 2.1, height: 0.5, build: buildPlates },
+  'intelligent-log-analyzer': { angle: 18, r: R_IN + 0.3, size: 2.1, height: 0.5, build: buildStrata },
+  honeyshield: { angle: 208, r: R_OUT + 0.5, size: 2.2, height: 0.5, build: buildDecoy },
   netsentinel: { angle: 262, r: R_OUT, size: 2.2, height: 0.5, build: buildRadar },
-  'phishguard-ai': { angle: 328, r: R_OUT, size: 2.2, height: 0.5, build: buildPhish },
+  'phishguard-ai': { angle: 328, r: R_OUT, size: 2.2, height: 0.5, build: buildFilter },
 };
 const gateAngles = nodes.filter((n) => n.zone === 'outside').map((n) => defs[n.slug].angle);
-
-// Engineered variant: same stations, but each one is an abstract module that shows what it does,
-// not a pun on its name.
-const engineered: Record<string, (g: THREE.Group) => void> = {
-  'mini-siem': buildRack,
-  threathunter: buildScanner,
-  fileshield: buildPlates,
-  'intelligent-log-analyzer': buildStrata,
-  honeyshield: buildDecoy,
-  netsentinel: buildRadar,
-  'phishguard-ai': buildFilter,
-};
 
 const polar = (angleDeg: number, r: number, y = 0) =>
   new THREE.Vector3(Math.cos(deg(angleDeg)) * r, y, Math.sin(deg(angleDeg)) * r);
@@ -105,110 +89,6 @@ function mesh(geo: THREE.BufferGeometry, mat: THREE.Material, x = 0, y = 0, z = 
   return m;
 }
 
-function buildWorkstation(g: THREE.Group) {
-  // three monitors, like the profile's pixel workstation: logs (mint), topology (cyan), dashboard (amber)
-  g.add(mesh(new RoundedBoxGeometry(2.5, 0.14, 1.1, 2, 0.05), M.white, 0, 0.62, -0.1));
-  g.add(mesh(new RoundedBoxGeometry(0.22, 0.62, 0.9, 2, 0.05), M.white, -1.05, 0.31, -0.1));
-  g.add(mesh(new RoundedBoxGeometry(0.22, 0.62, 0.9, 2, 0.05), M.white, 1.05, 0.31, -0.1));
-  const screens: [number, number, THREE.Material][] = [
-    [-0.82, 0.5, M.screenCyan],
-    [0, 0, M.screenMint],
-    [0.82, -0.5, M.screenAmber],
-  ];
-  for (const [x, rot, face] of screens) {
-    const mon = new THREE.Group();
-    mon.add(mesh(new THREE.CylinderGeometry(0.05, 0.08, 0.3, 6), M.ink, 0, 0.15, 0));
-    mon.add(mesh(new RoundedBoxGeometry(0.78, 0.52, 0.08, 2, 0.03), M.ink, 0, 0.55, 0));
-    const f = new THREE.Mesh(new THREE.PlaneGeometry(0.66, 0.4), face);
-    f.position.set(0, 0.55, 0.045);
-    mon.add(f);
-    mon.position.set(x, 0.69, -0.25);
-    mon.rotation.y = rot;
-    g.add(mon);
-  }
-  g.add(mesh(new RoundedBoxGeometry(0.9, 0.05, 0.3, 2, 0.02), M.ink, 0, 0.71, 0.25)); // keyboard
-}
-
-function buildMagnifier(g: THREE.Group) {
-  const glass = new THREE.Group();
-  glass.add(mesh(new THREE.TorusGeometry(0.5, 0.1, 8, 24), M.white));
-  const lens = new THREE.Mesh(
-    new THREE.CircleGeometry(0.45, 24),
-    paint(new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.55, roughness: 0.2, side: THREE.DoubleSide }), 'cyan')
-  );
-  glass.add(lens);
-  const handle = mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.8, 6), M.ink, 0, -0.9, 0);
-  glass.add(handle);
-  glass.position.set(0, 1.35, 0);
-  glass.rotation.z = deg(-28);
-  glass.userData.bob = true;
-  g.add(glass);
-}
-
-function buildLogs(g: THREE.Group) {
-  const log = () => {
-    const l = mesh(new THREE.CylinderGeometry(0.22, 0.22, 1.25, 7), M.wood);
-    l.rotation.z = Math.PI / 2;
-    return l;
-  };
-  const a = log(); a.position.set(-0.1, 0.22, -0.25); g.add(a);
-  const b = log(); b.position.set(-0.1, 0.22, 0.2); g.add(b);
-  const c = log(); c.position.set(-0.1, 0.6, -0.02); g.add(c);
-  // traffic cone: honest "work in progress" marker
-  const cone = new THREE.Group();
-  cone.add(mesh(new RoundedBoxGeometry(0.5, 0.06, 0.5, 2, 0.02), M.amber, 0, 0.03, 0));
-  cone.add(mesh(new THREE.ConeGeometry(0.2, 0.62, 8), M.amber, 0, 0.36, 0));
-  cone.add(mesh(new THREE.CylinderGeometry(0.105, 0.14, 0.12, 8), M.white, 0, 0.4, 0));
-  cone.position.set(0.72, 0, 0.45);
-  g.add(cone);
-}
-
-function buildFiles(g: THREE.Group) {
-  const folder = (y: number, rot: number, mat: THREE.Material) => {
-    const f = new THREE.Group();
-    f.add(mesh(new RoundedBoxGeometry(1.2, 0.1, 0.85, 2, 0.03), mat));
-    f.add(mesh(new RoundedBoxGeometry(0.4, 0.1, 0.2, 2, 0.03), mat, -0.35, 0, -0.45));
-    f.position.y = y;
-    f.rotation.y = rot;
-    return f;
-  };
-  g.add(folder(0.06, 0.12, M.white));
-  g.add(folder(0.18, -0.1, M.cyan));
-  g.add(folder(0.3, 0.05, M.white));
-  // a small shield standing on the stack
-  const s = new THREE.Shape();
-  s.moveTo(0, 0.5);
-  s.lineTo(0.38, 0.38);
-  s.lineTo(0.34, -0.05);
-  s.quadraticCurveTo(0.25, -0.35, 0, -0.5);
-  s.quadraticCurveTo(-0.25, -0.35, -0.34, -0.05);
-  s.lineTo(-0.38, 0.38);
-  s.closePath();
-  const shield = mesh(new THREE.ExtrudeGeometry(s, { depth: 0.12, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.03, bevelSegments: 1 }), M.mint);
-  shield.position.set(0.15, 0.95, 0);
-  g.add(shield);
-}
-
-function buildPhish(g: THREE.Group) {
-  const fish = new THREE.Group();
-  const body = mesh(new THREE.SphereGeometry(0.42, 7, 5), M.amber);
-  body.scale.set(1.5, 0.85, 0.5);
-  fish.add(body);
-  const tail = mesh(new THREE.ConeGeometry(0.3, 0.45, 4), M.amber, -0.78, 0, 0);
-  tail.rotation.z = Math.PI / 2;
-  fish.add(tail);
-  fish.add(mesh(new THREE.SphereGeometry(0.06, 6, 4), M.ink, 0.38, 0.1, 0.2));
-  fish.position.set(0.1, 1.05, 0.3);
-  fish.userData.bob = true;
-  g.add(fish);
-  // the guard: a shield disc the fish can't get past
-  const guard = mesh(new THREE.CylinderGeometry(0.72, 0.72, 0.14, 16), M.cyan, -0.35, 0.85, -0.45);
-  guard.rotation.x = Math.PI / 2;
-  guard.rotation.z = deg(12);
-  g.add(guard);
-  g.add(mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.5, 6), M.ink, -0.35, 0.25, -0.45));
-}
-
 function buildRadar(g: THREE.Group) {
   g.add(mesh(new THREE.CylinderGeometry(0.1, 0.18, 0.7, 6), M.ink, 0, 0.35, 0));
   const head = new THREE.Group();
@@ -226,31 +106,6 @@ function buildRadar(g: THREE.Group) {
   }
 }
 
-function buildHoneypot(g: THREE.Group) {
-  const profile = [
-    [0.0, 0], [0.42, 0], [0.55, 0.12], [0.62, 0.38], [0.58, 0.64], [0.44, 0.8], [0.36, 0.86], [0.4, 0.92], [0.0, 0.92],
-  ].map(([x, y]) => new THREE.Vector2(x, y));
-  g.add(mesh(new THREE.LatheGeometry(profile, 9), M.amber));
-  g.add(mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.1, 9), M.white, 0, 0.97, 0));
-  g.add(mesh(new THREE.SphereGeometry(0.09, 6, 4), M.white, 0, 1.06, 0));
-  const dipper = mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.0, 5), M.ink, 0.22, 1.15, 0.05);
-  dipper.rotation.z = deg(-25);
-  g.add(dipper);
-  // two bees circling the decoy
-  for (let i = 0; i < 2; i++) {
-    const bee = new THREE.Group();
-    const b = mesh(new THREE.SphereGeometry(0.1, 6, 4), M.ink);
-    b.scale.set(1.4, 1, 1);
-    bee.add(b);
-    const wing = mesh(new THREE.SphereGeometry(0.08, 5, 3), M.white, 0, 0.1, 0);
-    wing.scale.set(1, 0.3, 1.6);
-    bee.add(wing);
-    bee.userData.orbit = { radius: 0.95 + i * 0.25, speed: 1.4 - i * 0.5, phase: i * Math.PI, height: 1.25 + i * 0.25 };
-    g.add(bee);
-  }
-}
-
-// ---------- engineered builders ----------
 const sharp = (w: number, h: number, d: number) => new RoundedBoxGeometry(w, h, d, 2, 0.025);
 
 function buildRack(g: THREE.Group) {
@@ -335,8 +190,7 @@ function buildFilter(g: THREE.Group) {
 }
 
 // ---------- scene ----------
-export function initHero({ canvas, labels, reducedMotion, variant = 'illustrated' }: Options) {
-  const eng = variant === 'engineered';
+export function initHero({ canvas, labels, reducedMotion }: Options) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
@@ -386,11 +240,11 @@ export function initHero({ canvas, labels, reducedMotion, variant = 'illustrated
   const stations: Station[] = order.map((slug, i) => {
     const d = defs[slug];
     const group = new THREE.Group();
-    const pedestal = mesh(new RoundedBoxGeometry(d.size, d.height, d.size, 3, eng ? 0.04 : 0.14), M.white, 0, d.height / 2, 0);
+    const pedestal = mesh(new RoundedBoxGeometry(d.size, d.height, d.size, 3, 0.04), M.white, 0, d.height / 2, 0);
     group.add(pedestal);
     const top = new THREE.Group();
     top.position.y = d.height;
-    (eng ? engineered[slug] : d.build)(top);
+    d.build(top);
     group.add(top);
     const base = polar(d.angle, d.r);
     group.position.copy(base);
@@ -400,11 +254,9 @@ export function initHero({ canvas, labels, reducedMotion, variant = 'illustrated
   });
   const stationBySlug = new Map(stations.map((s) => [s.slug, s]));
 
-  // ---- firewall ring (instanced bricks) ----
-  // illustrated: two rows of chunky bricks. engineered: one row of thin, taller barrier panels.
-  const WALL = eng
-    ? { rows: 1, len: 0.96, gap: 0.05, h: 0.9, d: 0.14, r: 0.02 }
-    : { rows: 2, len: 0.92, gap: 0.08, h: 0.4, d: 0.52, r: 0.06 };
+  // ---- firewall ring (instanced panels) ----
+  // one row of thin barrier panels, with gaps (gates) where the paths pass
+  const WALL = { rows: 1, len: 0.96, gap: 0.05, h: 0.9, d: 0.14, r: 0.02 };
   const BRICK_L = WALL.len;
   const perRow = Math.floor((2 * Math.PI * R_WALL) / (BRICK_L + WALL.gap));
   const gateHalf = (1.35 / R_WALL) * (180 / Math.PI);
@@ -463,50 +315,16 @@ export function initHero({ canvas, labels, reducedMotion, variant = 'illustrated
   });
   world.add(tiles);
 
-  // ---- decor: low-poly trees and rocks at the edges, kept off paths and stations ----
+  // ---- ground: a faint survey grid, sized to the diorama so it never runs behind the headline ----
   const decor: THREE.Object3D[] = [];
-  const freeSpot = (p: THREE.Vector3) =>
-    stations.every((s) => s.base.distanceTo(p) > 2.4) &&
-    tilePositions.every((t) => t.distanceTo(p) > 1) &&
-    Math.abs(p.length() - R_WALL) > 1.2;
-  // engineered: no trees or rocks, just a faint survey grid on the ground
-  if (eng) {
-    // sized to the diorama's footprint so it never runs behind the headline
-    const grid = new THREE.GridHelper(23, 23);
-    const gm = grid.material as THREE.LineBasicMaterial;
-    gm.transparent = true;
-    gm.opacity = 0.12;
-    paint(gm, 'ink');
-    grid.position.y = 0.005;
-    world.add(grid);
-    decor.push(grid);
-  }
-  // screen-left (world ~100-190°) stays clear: that's where the headline sits
-  for (let i = 0; i < (eng ? 0 : 30); i++) {
-    const a = 195 + rand() * 225;
-    const r = 7.8 + rand() * 7;
-    const p = polar(a, r);
-    if (!freeSpot(p)) continue;
-    if (rand() < 0.55) {
-      const tree = new THREE.Group();
-      const h = 1.1 + rand() * 0.9;
-      tree.add(mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.5, 5), M.wood, 0, 0.25, 0));
-      const crown = mesh(new THREE.CylinderGeometry(0.42, 0.5, h, 5), M.mint, 0, 0.5 + h / 2, 0);
-      crown.rotation.y = rand() * Math.PI;
-      tree.add(crown);
-      tree.position.copy(p);
-      tree.rotation.z = (rand() - 0.5) * 0.12;
-      world.add(tree);
-      decor.push(tree);
-    } else {
-      const rock = mesh(new THREE.DodecahedronGeometry(0.28 + rand() * 0.3, 0), M.white);
-      rock.position.copy(p).setY(0.15);
-      rock.rotation.set(rand(), rand(), rand());
-      rock.scale.y = 0.6;
-      world.add(rock);
-      decor.push(rock);
-    }
-  }
+  const grid = new THREE.GridHelper(23, 23);
+  const gm = grid.material as THREE.LineBasicMaterial;
+  gm.transparent = true;
+  gm.opacity = 0.12;
+  paint(gm, 'ink');
+  grid.position.y = 0.005;
+  world.add(grid);
+  decor.push(grid);
 
   // ---- hub arcs (shared dependencies), shown for the highlighted station ----
   const arcs: { a: string; b: string; mat: THREE.LineBasicMaterial }[] = [];
@@ -598,7 +416,6 @@ export function initHero({ canvas, labels, reducedMotion, variant = 'illustrated
     waveColors.passed.set(readTok('accent'));
     if (!running && t0) render(performance.now());
   }
-  document.addEventListener('worldchange', applyColors);
 
   // ---- labels ----
   const labelEls = [...labels.querySelectorAll<HTMLElement>('[data-slug]')];
