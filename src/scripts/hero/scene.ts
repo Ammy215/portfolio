@@ -7,10 +7,14 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { nodes, hubs } from '../../data/graph';
 
+// 'illustrated' = literal icons (honey pot, fish, logs...). 'engineered' = abstract hardware-like modules.
+export type SceneVariant = 'illustrated' | 'engineered';
+
 interface Options {
   canvas: HTMLCanvasElement;
   labels: HTMLElement; // container holding <a data-slug="..."> elements
   reducedMotion: boolean;
+  variant?: SceneVariant;
 }
 
 // ---------- colour tokens (re-read when the page switches world colour) ----------
@@ -63,6 +67,18 @@ const defs: Record<string, StationDef> = {
   'phishguard-ai': { angle: 328, r: R_OUT, size: 2.2, height: 0.5, build: buildPhish },
 };
 const gateAngles = nodes.filter((n) => n.zone === 'outside').map((n) => defs[n.slug].angle);
+
+// Engineered variant: same stations, but each one is an abstract module that shows what it does,
+// not a pun on its name.
+const engineered: Record<string, (g: THREE.Group) => void> = {
+  'mini-siem': buildRack,
+  threathunter: buildScanner,
+  fileshield: buildPlates,
+  'intelligent-log-analyzer': buildStrata,
+  honeyshield: buildDecoy,
+  netsentinel: buildRadar,
+  'phishguard-ai': buildFilter,
+};
 
 const polar = (angleDeg: number, r: number, y = 0) =>
   new THREE.Vector3(Math.cos(deg(angleDeg)) * r, y, Math.sin(deg(angleDeg)) * r);
@@ -234,8 +250,93 @@ function buildHoneypot(g: THREE.Group) {
   }
 }
 
+// ---------- engineered builders ----------
+const sharp = (w: number, h: number, d: number) => new RoundedBoxGeometry(w, h, d, 2, 0.025);
+
+function buildRack(g: THREE.Group) {
+  // correlation core: a cabinet with three indicator bars in the profile's monitor colours
+  g.add(mesh(sharp(1.5, 1.55, 1.0), M.white, 0, 0.775, -0.1));
+  const bars: [number, THREE.Material][] = [[1.18, M.screenCyan], [0.92, M.screenMint], [0.66, M.screenAmber]];
+  for (const [y, mat] of bars) {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.12, 0.02), mat);
+    bar.position.set(0, y, 0.41);
+    g.add(bar);
+  }
+  for (let i = 0; i < 4; i++) g.add(mesh(new THREE.BoxGeometry(1.1, 0.025, 0.02), M.ink, 0, 0.26 + i * 0.07, 0.41));
+  // two feeder units either side
+  for (const x of [-1.15, 1.15]) {
+    g.add(mesh(sharp(0.6, 0.62, 0.8), M.white, x, 0.31, 0));
+    const led = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.06, 0.02), M.screenMint);
+    led.position.set(x, 0.45, 0.41);
+    g.add(led);
+  }
+}
+
+function buildScanner(g: THREE.Group) {
+  // intel lookup: a scan ring sweeping over indicators under test
+  g.add(mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.5, 8), M.ink, 0, 0.75, 0));
+  const ring = mesh(new THREE.TorusGeometry(0.62, 0.035, 6, 40), M.cyan);
+  ring.rotation.x = Math.PI / 2;
+  ring.userData.scan = true;
+  g.add(ring);
+  const samples: [number, number, THREE.Material][] = [[0.35, 0.2, M.white], [-0.3, 0.3, M.cyan], [0.05, -0.38, M.white]];
+  for (const [x, z, mat] of samples) g.add(mesh(sharp(0.22, 0.22, 0.22), mat, x, 0.11, z));
+}
+
+function buildPlates(g: THREE.Group) {
+  // file analysis: a stack of file plates, one flagged, beside a column of hash blocks
+  for (let i = 0; i < 5; i++) {
+    const p = mesh(sharp(1.1, 0.06, 0.8), i === 4 ? M.mint : M.white, -0.2 + i * 0.02, 0.04 + i * 0.09, 0);
+    p.rotation.y = (i % 2 ? 1 : -1) * 0.04;
+    g.add(p);
+  }
+  for (let i = 0; i < 6; i++) g.add(mesh(sharp(0.16, 0.16, 0.16), i % 3 === 0 ? M.mint : M.white, 0.68, 0.09 + i * 0.18, 0.1));
+}
+
+function buildStrata(g: THREE.Group) {
+  // log analysis: log lines as strata of different lengths; the top line is still being placed
+  const lengths = [1.5, 1.1, 1.35, 0.8, 1.2];
+  lengths.forEach((l, i) => g.add(mesh(sharp(l, 0.08, 0.55), M.white, -0.72 + l / 2, 0.05 + i * 0.12, 0)));
+  const pending = mesh(sharp(0.9, 0.08, 0.55), M.amber, -0.72 + 0.45, 0.95, 0);
+  pending.userData.bob = true;
+  g.add(pending);
+  // in-progress status strip along the front edge of the plinth
+  g.add(mesh(new THREE.BoxGeometry(1.8, 0.05, 0.05), M.amber, 0, 0.025, 0.95));
+}
+
+function buildDecoy(g: THREE.Group) {
+  // deception: an open frame with a lure at its centre
+  const frame = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(1.2, 1.2, 1.2)),
+    paint(new THREE.LineBasicMaterial(), 'ink')
+  );
+  frame.position.y = 0.62;
+  g.add(frame);
+  const lure = mesh(sharp(0.34, 0.34, 0.34), M.amber, 0, 0.62, 0);
+  lure.userData.spin = true;
+  g.add(lure);
+  for (const [x, z] of [[-0.6, 0.6], [0.6, 0.6], [-0.6, -0.6], [0.6, -0.6]]) {
+    g.add(mesh(new THREE.BoxGeometry(0.06, 1.2, 0.06), M.white, x, 0.62, z));
+  }
+}
+
+function buildFilter(g: THREE.Group) {
+  // URL filtering: a slatted filter; one bad request stopped in front, clean ones through behind
+  const w = 1.5;
+  const h = 1.1;
+  g.add(mesh(sharp(w, 0.08, 0.14), M.white, 0, 0.04, 0));
+  g.add(mesh(sharp(w, 0.08, 0.14), M.white, 0, h, 0));
+  g.add(mesh(sharp(0.08, h, 0.14), M.white, -w / 2, h / 2, 0));
+  g.add(mesh(sharp(0.08, h, 0.14), M.white, w / 2, h / 2, 0));
+  for (let i = 1; i <= 4; i++) g.add(mesh(new THREE.BoxGeometry(w - 0.1, 0.035, 0.05), M.cyan, 0, (h / 5) * i, 0));
+  g.add(mesh(sharp(0.24, 0.24, 0.24), M.amber, 0.1, 0.5, 0.42));
+  g.add(mesh(sharp(0.2, 0.2, 0.2), M.white, -0.35, 0.1, -0.5));
+  g.add(mesh(sharp(0.2, 0.2, 0.2), M.white, 0.35, 0.1, -0.62));
+}
+
 // ---------- scene ----------
-export function initHero({ canvas, labels, reducedMotion }: Options) {
+export function initHero({ canvas, labels, reducedMotion, variant = 'illustrated' }: Options) {
+  const eng = variant === 'engineered';
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
@@ -285,11 +386,11 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   const stations: Station[] = order.map((slug, i) => {
     const d = defs[slug];
     const group = new THREE.Group();
-    const pedestal = mesh(new RoundedBoxGeometry(d.size, d.height, d.size, 3, 0.14), M.white, 0, d.height / 2, 0);
+    const pedestal = mesh(new RoundedBoxGeometry(d.size, d.height, d.size, 3, eng ? 0.04 : 0.14), M.white, 0, d.height / 2, 0);
     group.add(pedestal);
     const top = new THREE.Group();
     top.position.y = d.height;
-    d.build(top);
+    (eng ? engineered[slug] : d.build)(top);
     group.add(top);
     const base = polar(d.angle, d.r);
     group.position.copy(base);
@@ -300,18 +401,22 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   const stationBySlug = new Map(stations.map((s) => [s.slug, s]));
 
   // ---- firewall ring (instanced bricks) ----
-  const BRICK_L = 0.92;
-  const perRow = Math.floor((2 * Math.PI * R_WALL) / (BRICK_L + 0.08));
+  // illustrated: two rows of chunky bricks. engineered: one row of thin, taller barrier panels.
+  const WALL = eng
+    ? { rows: 1, len: 0.96, gap: 0.05, h: 0.9, d: 0.14, r: 0.02 }
+    : { rows: 2, len: 0.92, gap: 0.08, h: 0.4, d: 0.52, r: 0.06 };
+  const BRICK_L = WALL.len;
+  const perRow = Math.floor((2 * Math.PI * R_WALL) / (BRICK_L + WALL.gap));
   const gateHalf = (1.35 / R_WALL) * (180 / Math.PI);
   const bricks: { angle: number; row: number }[] = [];
-  for (let row = 0; row < 2; row++) {
+  for (let row = 0; row < WALL.rows; row++) {
     for (let i = 0; i < perRow; i++) {
       const a = ((i + (row ? 0.5 : 0)) / perRow) * 360;
       const nearGate = gateAngles.some((g) => Math.abs(((a - g + 540) % 360) - 180) < gateHalf);
       if (!nearGate) bricks.push({ angle: a, row });
     }
   }
-  const brickMesh = new THREE.InstancedMesh(new RoundedBoxGeometry(BRICK_L, 0.4, 0.52, 2, 0.06), M.white, bricks.length);
+  const brickMesh = new THREE.InstancedMesh(new RoundedBoxGeometry(BRICK_L, WALL.h, WALL.d, 2, WALL.r), M.white, bricks.length);
   brickMesh.castShadow = true;
   brickMesh.receiveShadow = true;
   world.add(brickMesh);
@@ -321,7 +426,7 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
       // the wall builds as a sweep around the ring
       const local = clamp01((t - 0.55 - (b.angle / 360) * 0.7 - b.row * 0.12) / 0.35);
       const s = easeOutBack(local);
-      dummy.position.copy(polar(b.angle, R_WALL, 0.2 + b.row * 0.42 + (1 - local) * 1.2));
+      dummy.position.copy(polar(b.angle, R_WALL, WALL.h / 2 + b.row * (WALL.h + 0.02) + (1 - local) * 1.2));
       dummy.rotation.set(0, -(deg(b.angle) + Math.PI / 2), 0);
       dummy.scale.setScalar(Math.max(0.0001, s));
       dummy.updateMatrix();
@@ -364,8 +469,20 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
     stations.every((s) => s.base.distanceTo(p) > 2.4) &&
     tilePositions.every((t) => t.distanceTo(p) > 1) &&
     Math.abs(p.length() - R_WALL) > 1.2;
+  // engineered: no trees or rocks, just a faint survey grid on the ground
+  if (eng) {
+    // sized to the diorama's footprint so it never runs behind the headline
+    const grid = new THREE.GridHelper(23, 23);
+    const gm = grid.material as THREE.LineBasicMaterial;
+    gm.transparent = true;
+    gm.opacity = 0.12;
+    paint(gm, 'ink');
+    grid.position.y = 0.005;
+    world.add(grid);
+    decor.push(grid);
+  }
   // screen-left (world ~100-190°) stays clear: that's where the headline sits
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < (eng ? 0 : 30); i++) {
     const a = 195 + rand() * 225;
     const r = 7.8 + rand() * 7;
     const p = polar(a, r);
@@ -595,6 +712,7 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
     const secs = now / 1000;
     world.traverse((o) => {
       if (o.userData.spin) o.rotation.y = secs * 0.8;
+      if (o.userData.scan) o.position.y = 0.3 + (Math.sin(secs * 1.3) + 1) * 0.55;
       if (o.userData.bob) o.position.y += Math.sin(secs * 2 + o.id) * 0.0015;
       const orb = o.userData.orbit as { radius: number; speed: number; phase: number; height: number } | undefined;
       if (orb) {

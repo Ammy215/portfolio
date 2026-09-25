@@ -1,0 +1,71 @@
+---
+// Live reachability check, run in the visitor's browser on every page load. Not a claim baked into the HTML:
+// the element stays hidden until the script runs, then reports what it actually saw.
+// Cross-origin sites can't be read (no CORS), so this detects "reachable" (server answered) vs
+// "not reachable" (network error / timeout). It can't see an HTTP 500, and the wording says so.
+interface Props {
+  url: string;
+}
+const { url } = Astro.props;
+---
+
+<span class="uptime" data-uptime={url} data-state="checking" hidden title="Checked from your browser when this page loaded">
+  <span class="uptime__dot" aria-hidden="true"></span>
+  <span class="uptime__text" aria-live="polite">checking</span>
+</span>
+
+<script>
+  const els = document.querySelectorAll<HTMLElement>('[data-uptime]');
+  const labels = { up: 'reachable now', down: 'not reachable right now' } as const;
+  els.forEach(async (el) => {
+    el.hidden = false;
+    const text = el.querySelector('.uptime__text')!;
+    let state: keyof typeof labels = 'down';
+    try {
+      // opaque no-cors request: resolves if the server answered at all, rejects on network failure
+      await fetch(el.dataset.uptime!, { mode: 'no-cors', cache: 'no-store', signal: AbortSignal.timeout(8000) });
+      state = 'up';
+    } catch {
+      state = 'down';
+    }
+    el.dataset.state = state;
+    text.textContent = labels[state];
+  });
+</script>
+
+<style>
+  .uptime {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-data);
+    font-size: var(--step--1);
+    white-space: nowrap;
+  }
+  .uptime[hidden] {
+    display: none;
+  }
+  .uptime__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--noise);
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.6);
+  }
+  .uptime[data-state='checking'] .uptime__dot {
+    animation: uptime-pulse 1s ease-in-out infinite alternate;
+  }
+  .uptime[data-state='up'] .uptime__dot {
+    background: var(--mint);
+    box-shadow: 0 0 0 2px var(--ink);
+  }
+  .uptime[data-state='down'] .uptime__dot {
+    background: var(--amber);
+    box-shadow: 0 0 0 2px var(--ink);
+  }
+  @keyframes uptime-pulse {
+    to {
+      opacity: 0.35;
+    }
+  }
+</style>

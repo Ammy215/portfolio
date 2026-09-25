@@ -5,7 +5,13 @@ export const profile = {
   email: 'ammar.badlawala@gmail.com',
   lookingFor: 'Entry-level role in security engineering, SOC / detection, or networking',
   openTo: 'Open to entry-level security engineering, SOC / detection and networking roles.',
-  // Resume link stays hidden until the file exists.
+  // What's on the bench right now. Update this line when it changes (shown in hero + footer).
+  nowBuilding: {
+    text: 'Intelligent Log Analyzer, enterprise rebuild',
+    href: 'https://github.com/Ammy215/Intelligent-Log-Analyzer',
+  },
+  // Resume: set to a real file path (e.g. '/Ammar-Badlawala-Resume.pdf' in public/) once the PDF exists.
+  // While null, no resume link or button renders anywhere.
   resume: null as string | null,
 };
 
@@ -16,8 +22,8 @@ export const links = [
   { label: 'Email', href: 'mailto:ammar.badlawala@gmail.com' },
 ];
 
-// GitHub profile README. Lives in Ammy215/readme-profile (GitHub redirects this URL if the repo is renamed).
-export const readme = { label: 'GitHub README', href: 'https://github.com/Ammy215/readme-profile' };
+// GitHub profile README. Repo renamed readme-profile -> Ammy215 on 2026-09-25 so it shows on the profile page.
+export const readme = { label: 'GitHub README', href: 'https://github.com/Ammy215/Ammy215' };
 
 export const certifications = [
   {

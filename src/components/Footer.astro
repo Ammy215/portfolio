@@ -20,6 +20,10 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
       <p class="footer__open">{profile.openTo}</p>
       <a class="btn footer__top" href="#main">Back to top</a>
     </div>
+    <p class="footer__now data">
+      <span class="footer__now-label">now building</span>
+      <a href={profile.nowBuilding.href} {...ext}>{profile.nowBuilding.text}</a>
+    </p>
 
     <div class="footer__panel">
       <div class="footer__id">
@@ -104,6 +108,31 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
     font-size: var(--step--1);
   }
 
+  .footer__now {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 0.6rem;
+    margin: 0 0 var(--space-m);
+    font-size: var(--step--1);
+  }
+  .footer__now-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-2);
+  }
+  .footer__now-label::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--amber);
+    box-shadow: inset 0 0 0 1.5px var(--ink);
+  }
+  .footer__now a {
+    font-weight: 600;
+    text-decoration-thickness: 2px;
+  }
   .footer__panel {
     display: grid;
     grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));

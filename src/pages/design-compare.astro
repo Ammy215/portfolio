@@ -1,0 +1,91 @@
+---
+// Internal: side-by-side tone comparison of the two hero variants. noindex, excluded from the sitemap.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Hero tone comparison</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0b1620;
+        color: #fff;
+        font: 500 15px/1.4 system-ui, sans-serif;
+      }
+      header {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        padding: 0.8rem 1.25rem;
+      }
+      header a {
+        color: #4ff59a;
+      }
+      .pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 0 12px 12px;
+      }
+      figure {
+        margin: 0;
+      }
+      figcaption {
+        padding: 0.4rem 0 0.6rem;
+      }
+      figcaption strong {
+        font-size: 1.05rem;
+      }
+      .frame {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1440 / 900;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .frame iframe {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1440px;
+        height: 900px;
+        border: 0;
+        transform-origin: 0 0;
+        transform: scale(var(--s, 0.45));
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span>Hero tone comparison: same layout, same perimeter concept, different station style.</span>
+      <a href="?world=amber">amber world</a>
+      <a href="?">cyan world</a>
+    </header>
+    <div class="pair">
+      <figure>
+        <figcaption><strong>A. Illustrated</strong> (current): literal icons, trees, bricks</figcaption>
+        <div class="frame"><iframe data-scene="illustrated" title="Illustrated variant"></iframe></div>
+      </figure>
+      <figure>
+        <figcaption><strong>B. Engineered</strong>: abstract modules, panel wall, survey grid</figcaption>
+        <div class="frame"><iframe data-scene="engineered" title="Engineered variant"></iframe></div>
+      </figure>
+    </div>
+    <script>
+      const world = new URLSearchParams(location.search).get('world');
+      const frames = [...document.querySelectorAll<HTMLIFrameElement>('iframe[data-scene]')];
+      frames.forEach((f) => {
+        f.src = `/design/?scene=${f.dataset.scene}${world ? `&world=${world}` : ''}`;
+      });
+      const fit = () =>
+        frames.forEach((f) => f.style.setProperty('--s', String(f.parentElement!.clientWidth / 1440)));
+      fit();
+      addEventListener('resize', fit);
+    </script>
+  </body>
+</html>

@@ -14,8 +14,17 @@ const external = (href: string) => href.startsWith('http');
       <p class="contact__lede">
         I'm looking for an entry-level role in security engineering, SOC / detection, or networking. If you're hiring, or want a walkthrough of any of the code, email me or reach out on LinkedIn.
       </p>
-      <a class="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+      <div class="contact__mailrow">
+        <a class="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+        <button class="btn contact__copy" type="button" data-copy={profile.email} hidden>Copy email</button>
+        <span class="contact__copied data" aria-live="polite"></span>
+      </div>
       <ul class="contact__links">
+        {profile.resume && (
+          <li>
+            <a class="btn btn--mint" href={profile.resume} download>Download resume (PDF)</a>
+          </li>
+        )}
         {links.filter((l) => l.label !== 'Email').map((l) => (
           <li>
             <a class="btn" href={l.href} {...(external(l.href) ? { rel: 'noopener noreferrer', target: '_blank' } : {})}>
@@ -27,6 +36,29 @@ const external = (href: string) => href.startsWith('http');
     </div>
   </div>
 </section>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  const status = document.querySelector<HTMLElement>('.contact__copied');
+  if (btn && status && navigator.clipboard) {
+    btn.hidden = false;
+    let timer: number | undefined;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy!);
+        btn.textContent = 'Copied';
+        status.textContent = 'Email address copied to clipboard';
+      } catch {
+        status.textContent = "Couldn't copy. Select the address instead.";
+      }
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        btn.textContent = 'Copy email';
+        status.textContent = '';
+      }, 2200);
+    });
+  }
+</script>
 
 <style>
   .contact {
@@ -57,9 +89,39 @@ const external = (href: string) => href.startsWith('http');
     line-height: 1.45;
     max-width: 40ch;
   }
+  .contact__mailrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+    margin: var(--space-s) 0 var(--space-l);
+  }
+  .contact__copy {
+    min-height: 2.5rem;
+    padding: 0.4rem 1rem;
+    font: inherit;
+    font-weight: 650;
+    font-size: var(--step--1);
+    border: 0;
+    cursor: pointer;
+  }
+  .contact__copy[hidden] {
+    display: none;
+  }
+  .contact__copied:empty {
+    display: none;
+  }
+  .contact__copied {
+    width: 100%;
+    font-size: var(--step--1);
+    color: var(--mint);
+  }
+  .btn--mint {
+    background: var(--mint);
+    color: var(--ink);
+  }
   .contact__email {
     display: inline-block;
-    margin: var(--space-s) 0 var(--space-l);
     font-weight: 800;
     font-variation-settings: var(--wdth-heading);
     font-size: clamp(1.5rem, 0.9rem + 2.4vw, 2.8rem);

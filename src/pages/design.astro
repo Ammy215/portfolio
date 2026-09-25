@@ -4,7 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
-import { projectHref, projectHrefLabel } from '../data/projects';
+import UptimeDot from '../components/UptimeDot.astro';
+import { projectHref, projectHrefLabel, projectLinks } from '../data/projects';
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 ---
@@ -29,7 +30,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag tag--live">live</span>
         </div>
         <h3 class="block__title block__title--xl"><a class="block__link" href={projectHref('mini-siem')} {...ext}>Mini SIEM</a></h3>
-        <p class="block__go data">{projectHrefLabel('mini-siem') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('mini-siem') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['mini-siem'].liveUrl && <UptimeDot url={projectLinks['mini-siem'].liveUrl!} />}
+        </p>
         <p class="block__lede">
           A SIEM built from scratch. Ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK IDs, and correlates one attacker's alerts into a single incident.
         </p>
@@ -47,7 +51,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag tag--live">live</span>
         </div>
         <h3 class="block__title"><a class="block__link" href={projectHref('netsentinel')} {...ext}>NetSentinel</a></h3>
-        <p class="block__go data">{projectHrefLabel('netsentinel') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('netsentinel') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['netsentinel'].liveUrl && <UptimeDot url={projectLinks['netsentinel'].liveUrl!} />}
+        </p>
         <p class="block__lede support">
           Upload a PCAP, get scored flows back. Isolation Forest and One-Class SVM on real captured traffic, with RAG-grounded AI explaining each anomaly.
         </p>
@@ -58,7 +65,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag">deception</span>
         </div>
         <h3 class="block__title"><a class="block__link" href={projectHref('honeyshield')} {...ext}>HoneyShield</a></h3>
-        <p class="block__go data">{projectHrefLabel('honeyshield') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('honeyshield') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['honeyshield'].liveUrl && <UptimeDot url={projectLinks['honeyshield'].liveUrl!} />}
+        </p>
         <p class="block__lede">Multi-protocol honeypot on raw asyncio sockets. Spots coordinated campaigns by ASN and time window.</p>
         <span class="tag tag--partial tag--wrap">http live; ssh, ftp, telnet built but not deployed</span>
       </article>
@@ -69,7 +79,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag tag--progress">in progress</span>
         </div>
         <h3 class="block__title"><a class="block__link" href={projectHref('intelligent-log-analyzer')} {...ext}>Log Analyzer</a></h3>
-        <p class="block__go data">{projectHrefLabel('intelligent-log-analyzer') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('intelligent-log-analyzer') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['intelligent-log-analyzer'].liveUrl && <UptimeDot url={projectLinks['intelligent-log-analyzer'].liveUrl!} />}
+        </p>
         <p class="block__lede">A 12-phase enterprise rebuild. Final QA and deploy still to come.</p>
       </article>
 
@@ -79,7 +92,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag tag--local">runs locally</span>
         </div>
         <h3 class="block__title"><a class="block__link" href={projectHref('phishguard-ai')} {...ext}>phishguard&#8209;ai</a></h3>
-        <p class="block__go data">{projectHrefLabel('phishguard-ai') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('phishguard-ai') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['phishguard-ai'].liveUrl && <UptimeDot url={projectLinks['phishguard-ai'].liveUrl!} />}
+        </p>
         <p class="block__lede">Random Forest plus a 16-rule heuristic engine and live threat-intel lookups, with a working Chrome extension. Runs locally; not deployed.</p>
       </article>
 
@@ -89,7 +105,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag tag--live">live</span>
         </div>
         <h3 class="block__title"><a class="block__link" href={projectHref('fileshield')} {...ext}>FileShield</a></h3>
-        <p class="block__go data">{projectHrefLabel('fileshield') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('fileshield') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['fileshield'].liveUrl && <UptimeDot url={projectLinks['fileshield'].liveUrl!} />}
+        </p>
         <p class="block__lede">Hashing, entropy and YARA matching. My first shipped project, and my first real production outage.</p>
       </article>
 
@@ -99,7 +118,10 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
           <span class="tag tag--live">live, private repo</span>
         </div>
         <h3 class="block__title"><a class="block__link" href={projectHref('threathunter')} {...ext}>ThreatHunter</a></h3>
-        <p class="block__go data">{projectHrefLabel('threathunter') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</p>
+        <p class="block__go data">
+          <span>{projectHrefLabel('threathunter') === 'Live site' ? 'opens the live site' : 'opens the code on GitHub'}</span>
+          {projectLinks['threathunter'].liveUrl && <UptimeDot url={projectLinks['threathunter'].liveUrl!} />}
+        </p>
         <p class="block__lede">
           IOC search across IP, domain, hash and URL, fanned out to AbuseIPDB, OTX, IPInfo, VirusTotal and NIST NVD. 89 automated tests and an adversarial testing pass: 8 findings, each fixed and retested.
         </p>
@@ -189,6 +211,11 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
     background: var(--world-pale);
   }
   .block__go {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    position: relative;
+    z-index: 1;
     margin: -0.2rem 0 0;
     font-size: var(--step--1);
     color: var(--ink-2);
