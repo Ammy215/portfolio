@@ -4,178 +4,375 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 
 const swatches = [
-  { name: 'ground', hex: '#e7edeb', role: 'Page background: cool, printed-topology paper' },
-  { name: 'panel', hex: '#f4f7f6', role: 'Raised surfaces: project rows, chips' },
-  { name: 'ink', hex: '#0d1b24', role: 'Text, hard edges (README navy, lifted)' },
-  { name: 'ink-2', hex: '#3b4a53', role: 'Secondary text' },
-  { name: 'signal', hex: '#086d3f', role: 'Logs and detection channel (from #39ff88)' },
-  { name: 'link', hex: '#0a5f86', role: 'Network channel and links (from #38bdf8)' },
-  { name: 'alert', hex: '#9a5200', role: 'Status, in progress (from #ffb454)' },
-  { name: 'noise', hex: '#8c9aa2', role: 'Decorative only: particles, rules' },
+  { name: 'ground', hex: '#e7edeb' },
+  { name: 'panel', hex: '#f4f7f6' },
+  { name: 'ink', hex: '#0d1b24' },
+  { name: 'ink-2', hex: '#3b4a53' },
+  { name: 'signal', hex: '#086d3f' },
+  { name: 'link', hex: '#0a5f86' },
+  { name: 'alert', hex: '#9a5200' },
+  { name: 'noise', hex: '#8c9aa2' },
 ];
 ---
 
 <BaseLayout title="Style tile" description="Internal design review page." noindex>
-  <div class="wrap">
+  <div style="--hero-overlap: clamp(4rem, 10vw, 8rem)">
     <Hero />
-
-    <section class="tile">
-      <h2>Palette</h2>
-      <p>Three channels from the GitHub profile's three monitors, deepened to pass WCAG AA as text on a light ground. The bright originals only appear as emissive colour inside the 3D scene.</p>
-      <ul class="swatches">
-        {swatches.map((s) => (
-          <li>
-            <span class="swatch" style={`background:${s.hex}`}></span>
-            <span class="data">--{s.name}  {s.hex}</span>
-            <span class="role">{s.role}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="tile">
-      <h2>Type</h2>
-      <p class="data">Geist 400/500/700 for reading. Departure Mono for data only.</p>
-      <p style="font-size:var(--step-4);font-weight:700;letter-spacing:-0.02em;line-height:1.05;margin:0">Built to understand</p>
-      <p style="font-size:var(--step-3);font-weight:700;letter-spacing:-0.02em;margin:0">Broken to learn how it fails</p>
-      <p style="font-size:var(--step-2);font-weight:700;margin:0">Automated to make it better</p>
-      <p>Body copy sits at a comfortable measure. Signature rules weren't URL-decoding input, so 3 of 4 encoded attacks were invisible until the decoder was fixed. Specific, true details like that carry the credibility, so the type stays out of their way.</p>
-      <p class="data">fastapi  postgresql  react 18  jwt + bcrypt  mitre att&amp;ck</p>
-    </section>
-
-    <section class="tile">
-      <h2>Status</h2>
-      <p class="statuses">
-        <span class="status status--live">Live</span>
-        <span class="status status--partial">HTTP honeypot live, other protocols not yet deployed</span>
-        <span class="status status--progress">In progress</span>
-      </p>
-    </section>
-
-    <section class="tile">
-      <h2>Project row</h2>
-      <article class="row row--signal">
-        <p class="row__layer data">Correlation</p>
-        <div class="row__body">
-          <h3><a href="/projects/mini-siem">Mini SIEM</a></h3>
-          <p>A SIEM built from scratch: ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK IDs, and correlates an attacker's alerts into a single incident.</p>
-          <dl class="row__meta">
-            <div><dt>Status</dt><dd><span class="status status--live">Live</span></dd></div>
-            <div><dt>Stack</dt><dd class="data">FastAPI, PostgreSQL (Neon), React 18, own JWT + bcrypt + RBAC</dd></div>
-          </dl>
-        </div>
-      </article>
-      <article class="row row--alert">
-        <p class="row__layer data">Logs</p>
-        <div class="row__body">
-          <h3><a href="/projects/intelligent-log-analyzer">Intelligent Log Analyzer</a></h3>
-          <p>Parses SSH, Apache and Windows Event logs and scores brute force, port scans and credential stuffing with a weighted threat score.</p>
-          <dl class="row__meta">
-            <div><dt>Status</dt><dd><span class="status status--progress">In progress</span></dd></div>
-            <div><dt>Stack</dt><dd class="data">FastAPI, MongoDB Atlas, Supabase, Upstash Redis, React 18</dd></div>
-          </dl>
-        </div>
-      </article>
-    </section>
-
-    <section class="tile">
-      <h2>Quote</h2>
-      <blockquote class="quote">
-        <p>Consistency doesn't ask how I feel about it. It just asks if I showed up.</p>
-      </blockquote>
-    </section>
   </div>
+
+  <!-- Technique 5: this section pulls up into the hero, the flagship card crosses the hero's slanted edge. -->
+  <section id="work" class="work wrap" aria-labelledby="work-title">
+    <div class="work__intro">
+      <h2 id="work-title" class="split-heading">
+        Shipped work.{' '}<span class="soft">Seven platforms, each with the real story of what broke and how it got fixed.</span>
+      </h2>
+    </div>
+
+    <article class="card card--lifted flagship">
+      <header class="card__meta">
+        <span class="channel channel--signal data">Correlation</span>
+        <span class="status status--live">Live</span>
+      </header>
+      <h3 class="flagship__title">Mini SIEM</h3>
+      <p class="card__lede">
+        <strong>A SIEM built from scratch.</strong> Ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK technique IDs, and correlates one attacker's alerts into a single incident.
+      </p>
+      <dl class="evidence data">
+        <div><dt>Scope</dt><dd>planned as 13 phases, grew to 27 once the real scope was clear</dd></div>
+        <div><dt>Tests</dt><dd>600+ backend tests, CI against an ephemeral database</dd></div>
+        <div><dt>Found</dt><dd>3 of 4 URL-encoded attacks slipped past signature rules until input was decoded</dd></div>
+        <div><dt>Found</dt><dd>forged proxy headers could bypass rate limiting; fixed with shared-secret validation</dd></div>
+      </dl>
+      <p class="card__stack data">FastAPI, PostgreSQL (Neon), React 18, own JWT + bcrypt + RBAC</p>
+      <p class="card__links">
+        <a href="/projects/mini-siem">Read the case study</a>
+        <a href="https://mini-siem-five.vercel.app" rel="noopener noreferrer">Live demo</a>
+      </p>
+    </article>
+
+    <div class="work__grid">
+      <article class="card">
+        <header class="card__meta">
+          <span class="channel channel--link data">Network traffic</span>
+          <span class="status status--live">Live</span>
+        </header>
+        <h3><a href="/projects/netsentinel">NetSentinel</a></h3>
+        <p class="card__lede">
+          <strong>PCAP in, scored flows out.</strong> Assembles flows from real captured traffic, scores anomalies with Isolation Forest and One-Class SVM, and uses RAG-grounded AI to explain why.
+        </p>
+        <p class="card__stack data">FastAPI, scikit-learn, Scapy + PyShark, Supabase</p>
+      </article>
+
+      <article class="card">
+        <header class="card__meta">
+          <span class="channel channel--link data">Deception</span>
+          <span class="status status--partial">HTTP live</span>
+        </header>
+        <h3><a href="/projects/honeyshield">HoneyShield</a></h3>
+        <p class="card__lede">
+          <strong>Multi-protocol honeypot on raw asyncio sockets.</strong> Groups attacks by ASN and time window to spot coordinated campaigns. SSH, FTP and Telnet are built and tested but not deployed yet.
+        </p>
+        <p class="card__stack data">Python asyncio, SQLite3, Streamlit, Gemini</p>
+      </article>
+
+      <article class="card card--flat">
+        <header class="card__meta">
+          <span class="channel channel--alert data">Logs</span>
+          <span class="status status--progress">In progress</span>
+        </header>
+        <h3><a href="/projects/intelligent-log-analyzer">Intelligent Log Analyzer</a></h3>
+        <p class="card__lede">
+          <strong>A 12-phase enterprise rebuild.</strong> Parses SSH, Apache and Windows Event logs and scores brute force, port scans and credential stuffing. Final QA and deploy still to come.
+        </p>
+        <p class="card__stack data">FastAPI, MongoDB Atlas, Supabase, Upstash Redis</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Techniques 1 + 2, annotated for review -->
+  <section class="specimen wrap" aria-labelledby="spec-title">
+    <h2 id="spec-title" class="visually-hidden">Type specimen</h2>
+    <div class="specimen__display">
+      <p class="specimen__big">Built to<br /> understand.</p>
+      <p class="specimen__support">Broken to learn how it fails, then automated to make it better.</p>
+    </div>
+    <dl class="specimen__notes data">
+      <div><dt>Display</dt><dd>Geist 700, leading 0.96, tracking −0.035em</dd></div>
+      <div><dt>Support</dt><dd>Geist 300, leading 1.5, tracking +0.006em, ink-2</dd></div>
+      <div><dt>Body</dt><dd>Geist 400, leading 1.65</dd></div>
+      <div><dt>Data</dt><dd>Departure Mono, facts only</dd></div>
+    </dl>
+    <p class="specimen__body">
+      Body copy stays loose so long case studies read easily. Signature rules weren't URL-decoding input, so 3 of 4 encoded attacks were invisible until the decoder was fixed. Specific details like that carry the credibility, so the body type stays out of their way.
+    </p>
+  </section>
+
+  <!-- Spacious, off-centre section after two dense ones: pacing -->
+  <section class="quote-band" aria-label="Quote">
+    <blockquote class="quote wrap">
+      <p>Showing up when it's easy was never the test. <span class="strong">Showing up when it isn't, is.</span></p>
+    </blockquote>
+  </section>
+
+  <!-- Tight section: palette strip -->
+  <section class="palette wrap" aria-labelledby="palette-title">
+    <h2 id="palette-title" class="split-heading">Palette. <span class="soft">Three monitor colours from the GitHub profile, deepened to pass AA.</span></h2>
+    <ul class="swatches">
+      {swatches.map((s) => (
+        <li>
+          <span class="swatch" style={`background:${s.hex}`}></span>
+          <span class="data">{s.name}</span>
+          <span class="data hex">{s.hex}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 </BaseLayout>
 
 <style>
-  .tile {
+  /* ---------- Work: overlaps the hero ---------- */
+  .work {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * clamp(4rem, 10vw, 8rem));
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      'flag flag flag flag flag flag flag intro intro intro intro intro'
+      'grid grid grid grid grid grid grid grid grid grid grid grid';
+    column-gap: var(--space-l);
+    row-gap: var(--space-m);
+    padding-bottom: var(--space-xl);
+  }
+  .work__intro {
+    grid-area: intro;
+    align-self: end;
+    padding-bottom: var(--space-l);
+  }
+  .flagship {
+    grid-area: flag;
+    padding: var(--space-l);
+  }
+  .work__grid {
+    grid-area: grid;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-m);
+    /* shift the row right so it doesn't line up under the flagship: tension, not a table */
+    margin-left: clamp(0rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-s);
+    margin-bottom: var(--space-m);
+  }
+  .channel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .channel::before {
+    content: '';
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+  .channel--signal::before { background: var(--signal); }
+  .channel--link::before { background: var(--link); }
+  .channel--alert::before { background: var(--alert); }
+
+  .card h3 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .card h3 a::after {
+    /* whole card is the click target, heading stays the accessible name */
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .card:has(h3 a:hover) {
+    box-shadow: var(--shadow-lifted);
+  }
+  .card:has(h3 a:focus-visible) {
+    outline: 2px solid var(--link);
+    outline-offset: 3px;
+  }
+  .card__lede {
+    color: var(--ink-2);
+    font-size: var(--step-0);
+  }
+  .card__lede strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .card__stack {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .flagship__title {
+    font-size: var(--step-3);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    font-weight: 700;
+  }
+  .flagship .card__lede {
+    font-size: var(--step-1);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .evidence {
+    margin: var(--space-m) 0;
+    padding: var(--space-m);
+    border-radius: 8px;
+    background: var(--ground);
+    box-shadow: inset 0 1px 2px rgb(13 27 36 / 0.08), inset 0 0 0 1px rgb(13 27 36 / 0.05);
+    font-size: var(--step--1);
+    display: grid;
+    gap: var(--space-xs);
+  }
+  .evidence div {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: var(--space-s);
+  }
+  .evidence dt {
+    color: var(--ink-2);
+  }
+  .evidence dd {
+    margin: 0;
+    line-height: 1.45;
+  }
+  .card__links {
+    display: flex;
+    gap: var(--space-m);
+    margin: var(--space-m) 0 0;
+    font-weight: 500;
+  }
+
+  /* ---------- Specimen ---------- */
+  .specimen {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: var(--space-xl);
     padding-block: var(--space-xl);
-    border-top: 2px solid var(--ink);
+  }
+  .specimen__big {
+    font-size: clamp(3rem, 2rem + 4.5vw, 5.6rem);
+    font-weight: 700;
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    margin-bottom: var(--space-s);
+  }
+  .specimen__support {
+    font-size: var(--step-1);
+    font-weight: 300;
+    letter-spacing: var(--tracking-support);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 30ch;
+  }
+  .specimen__notes {
+    align-self: end;
+    font-size: var(--step--1);
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+  }
+  .specimen__notes div {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+  }
+  .specimen__notes dt {
+    color: var(--ink-2);
+  }
+  .specimen__notes dd {
+    margin: 0;
+  }
+  .specimen__body {
+    grid-column: 1;
+    margin-top: var(--space-l);
+  }
+
+  /* ---------- Quote: spacious, pushed off-centre ---------- */
+  .quote-band {
+    padding-block: var(--space-2xl) calc(var(--space-2xl) * 1.3);
+  }
+  .quote {
+    margin-block: 0;
+  }
+  .quote p {
+    margin-left: auto;
+    max-width: 22ch;
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3.6rem);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--ink-2);
+  }
+  .quote .strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ---------- Palette: tight ---------- */
+  .palette {
+    padding-bottom: var(--space-xl);
   }
   .swatches {
     list-style: none;
     padding: 0;
+    margin: var(--space-m) 0 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-    gap: var(--space-m);
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: var(--space-s);
   }
   .swatches li {
     display: grid;
-    gap: var(--space-2xs);
+    gap: 0.15rem;
+    font-size: var(--step--1);
   }
   .swatch {
-    height: 4.5rem;
-    border-radius: var(--radius-media);
-    border: 1px solid rgb(13 27 36 / 0.15);
+    height: 3.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-raised);
+    margin-bottom: var(--space-2xs);
   }
-  .role {
-    font-size: var(--step--1);
+  .hex {
     color: var(--ink-2);
   }
-  .statuses {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-l);
-  }
 
-  .row {
-    display: grid;
-    grid-template-columns: 9rem 1fr;
-    gap: var(--space-m);
-    padding: var(--space-m) var(--space-m) var(--space-m) 0;
-    background: var(--panel);
-    border-left: 6px solid;
-    margin-bottom: var(--space-s);
-  }
-  .row--signal { border-left-color: var(--signal); }
-  .row--alert { border-left-color: var(--alert); }
-  .row__layer {
-    margin: 0.3rem 0 0 var(--space-m);
-    color: var(--ink-2);
-  }
-  .row__body h3 a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .row__body h3 a:hover {
-    text-decoration: underline;
-  }
-  .row__meta {
-    display: grid;
-    gap: var(--space-2xs);
-    margin: 0;
-  }
-  .row__meta div {
-    display: grid;
-    grid-template-columns: 4.5rem 1fr;
-    gap: var(--space-s);
-  }
-  .row__meta dt {
-    color: var(--ink-2);
-    font-size: var(--step--1);
-  }
-  .row__meta dd {
-    margin: 0;
-  }
-
-  .quote {
-    margin: 0;
-    padding-left: var(--space-m);
-    border-left: 3px solid var(--noise);
-  }
-  .quote p {
-    font-size: var(--step-2);
-    line-height: 1.3;
-    font-weight: 500;
-  }
-
-  @media (max-width: 40rem) {
-    .row {
-      grid-template-columns: 1fr;
-      padding-left: var(--space-m);
+  @media (max-width: 60rem) {
+    .work {
+      grid-template-areas:
+        'intro intro intro intro intro intro intro intro intro intro intro intro'
+        'flag flag flag flag flag flag flag flag flag flag flag flag'
+        'grid grid grid grid grid grid grid grid grid grid grid grid';
+      margin-top: calc(-1 * clamp(2rem, 6vw, 4rem));
     }
-    .row__layer {
+    .work__intro {
+      padding-bottom: 0;
+    }
+    .work__grid {
+      grid-template-columns: minmax(0, 1fr);
       margin-left: 0;
+    }
+    .specimen {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .specimen__notes {
+      margin-top: var(--space-m);
+    }
+    .flagship {
+      padding: var(--space-m);
     }
   }
 </style>

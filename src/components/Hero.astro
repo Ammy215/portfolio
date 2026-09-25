@@ -5,54 +5,58 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <div class="hero__text">
-    <h1 id="hero-title">Ammar Badlawala</h1>
-    <p class="hero__identity">
-      Cybersecurity, networking and AI. I build things to understand them, break them to learn how they fail, and automate what I can to make them better.
-    </p>
-    <p class="hero__status">
-      B.Sc. IT graduate, early in my career, building and shipping real security tools.
-    </p>
-    <div class="hero__actions">
-      <a class="btn btn--solid" href="#work">See what I've shipped</a>
-      <a class="btn" href="#about">About me</a>
-    </div>
-  </div>
+  <!-- Atmosphere: two channel hues bleeding in off-centre, under paper grain.
+       Same idea as the 3D piece (noise becoming signal), present even before WebGL loads. -->
+  <div class="hero__atmos grain" aria-hidden="true"></div>
 
-  <figure class="hero__viz" aria-labelledby="viz-caption">
-    <div class="hero__stage" data-hero-stage>
-      <canvas class="hero__canvas" aria-hidden="true"></canvas>
-      <div class="hero__labels" data-hero-labels>
-        {nodes.map((n) => (
-          <a class:list={['node-label', `node-label--${n.inProgress ? 'alert' : n.channel}`]} href={`/projects/${n.slug}`} data-slug={n.slug}>
-            {n.name}
-          </a>
-        ))}
+  <div class="hero__inner">
+    <div class="hero__text">
+      <h1 id="hero-title">Ammar<br /> Badlawala</h1>
+      <p class="hero__tagline">
+        <span class="strong">Cybersecurity × Networking × AI.</span>{' '}I build things to understand them, break them to learn how they fail, and automate what I can to make them better.
+      </p>
+      <p class="hero__status data">B.Sc. IT graduate, early career, shipping real security tools</p>
+      <div class="hero__actions">
+        <a class="btn btn--solid" href="#work">See what I've shipped</a>
+        <a class="btn" href="#about">About me</a>
       </div>
     </div>
-    <figcaption id="viz-caption" class="hero__caption">
-      Seven separate projects, placed on the defense layer each one covers, from first contact on the outside to correlation at the centre. Arcs show real shared dependencies.
-    </figcaption>
 
-    <!-- Same data as text: shown when WebGL isn't available, always available to screen readers. -->
-    <div class="hero__fallback" data-hero-fallback>
-      <ol class="layer-list">
-        {byLayer.map((l) => (
-          <li>
-            <span class="data">{l.label}</span>
-            <a href={`/projects/${l.node.slug}`}>{l.node.name}</a>
-          </li>
-        ))}
-      </ol>
-      <ul class="hub-list">
-        {hubs.map((h) => (
-          <li>
-            <span class="data">{h.label}</span>: shared by {h.projects.map((s) => nodes.find((n) => n.slug === s)!.name).join(', ')}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </figure>
+    <figure class="hero__viz" aria-labelledby="viz-caption">
+      <div class="hero__stage" data-hero-stage>
+        <canvas class="hero__canvas" aria-hidden="true"></canvas>
+        <div class="hero__labels" data-hero-labels>
+          {nodes.map((n) => (
+            <a class:list={['node-label', `node-label--${n.inProgress ? 'alert' : n.channel}`]} href={`/projects/${n.slug}`} data-slug={n.slug}>
+              {n.name}
+            </a>
+          ))}
+        </div>
+      </div>
+      <figcaption id="viz-caption" class="hero__caption">
+        Seven separate projects, each placed on the defense layer it covers: first contact on the outside, correlation at the centre. Arcs are real shared dependencies.
+      </figcaption>
+
+      <!-- Same data as text: shown when WebGL isn't available, always available to screen readers. -->
+      <div class="hero__fallback" data-hero-fallback>
+        <ol class="layer-list">
+          {byLayer.map((l) => (
+            <li>
+              <span class="data">{l.label}</span>
+              <a href={`/projects/${l.node.slug}`}>{l.node.name}</a>
+            </li>
+          ))}
+        </ol>
+        <ul class="hub-list">
+          {hubs.map((h) => (
+            <li>
+              <span class="data">{h.label}</span>: shared by {h.projects.map((s) => nodes.find((n) => n.slug === s)!.name).join(', ')}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </figure>
+  </div>
 </section>
 
 <script>
@@ -83,22 +87,61 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
 
 <style>
   .hero {
+    position: relative;
+    isolation: isolate;
+    overflow-x: clip;
+    /* room for the next section to overlap the hero's lower edge */
+    padding-bottom: var(--hero-overlap, 0px);
+  }
+
+  .hero__atmos {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(55% 60% at 84% 16%, rgb(56 189 248 / 0.3), transparent 72%),
+      radial-gradient(40% 45% at 64% 58%, rgb(57 255 136 / 0.17), transparent 70%),
+      radial-gradient(30% 40% at 8% 0%, rgb(56 189 248 / 0.1), transparent 70%),
+      var(--ground);
+    /* the wash ends on a slant rather than a flat line */
+    clip-path: polygon(0 0, 100% 0, 100% 72%, 0 100%);
+  }
+
+  .hero__inner {
+    width: min(100% - 2rem, var(--page-max));
+    margin-inline: auto;
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: var(--space-l);
-    align-items: center;
-    min-height: min(92vh, 56rem);
-    padding-block: var(--space-xl) var(--space-l);
+    /* deliberately NOT centred: the text sits high, the diagram hangs lower */
+    align-items: start;
+    padding-top: clamp(2.5rem, 7vh, 5rem);
+  }
+
+  .hero__text {
+    padding-top: clamp(1.5rem, 6vh, 4.5rem);
+    position: relative;
+    z-index: 1;
   }
   .hero__text h1 {
+    font-size: clamp(3.2rem, 2rem + 5.4vw, 6.4rem);
     margin-bottom: var(--space-m);
   }
-  .hero__identity {
+  .hero__tagline {
     font-size: var(--step-1);
-    line-height: 1.45;
+    font-weight: 300;
+    line-height: 1.5;
+    letter-spacing: var(--tracking-support);
+    color: var(--ink-2);
+    max-width: 34ch;
+  }
+  .hero__tagline .strong {
+    font-weight: 500;
     color: var(--ink);
+    letter-spacing: -0.01em;
   }
   .hero__status {
+    font-size: var(--step--1);
     color: var(--ink-2);
   }
   .hero__actions {
@@ -110,6 +153,8 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
 
   .hero__viz {
     margin: 0;
+    /* break the grid: the diagram runs past the content margin to the viewport edge */
+    margin-right: calc((min(100vw - 2rem, var(--page-max)) - 100vw) / 2);
   }
   .hero__stage {
     position: relative;
@@ -139,25 +184,31 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
     font-family: var(--font-data);
     font-size: var(--step--1);
     line-height: 1;
-    padding: 0.3rem 0.45rem;
+    padding: 0.35rem 0.5rem;
     border-radius: var(--radius-chip);
     background: var(--panel);
     color: var(--ink);
     text-decoration: none;
-    border-left: 3px solid currentColor;
+    box-shadow: var(--shadow-raised);
     pointer-events: auto;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .node-label::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    background: currentColor;
   }
   .node-label[data-side='left'] {
     translate: -100% 0;
     margin-left: -0.6rem;
-    border-left-width: 0;
-    border-right-width: 3px;
-    border-right-style: solid;
   }
-  .node-label--signal { border-color: var(--signal); }
-  .node-label--link { border-color: var(--link); }
-  .node-label--alert { border-color: var(--alert); }
+  .node-label--signal::before { background: var(--signal); }
+  .node-label--link::before { background: var(--link); }
+  .node-label--alert::before { background: var(--alert); }
   .node-label:hover,
   .node-label:focus-visible {
     background: var(--ink);
@@ -167,8 +218,9 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
   .hero__caption {
     font-size: var(--step--1);
     color: var(--ink-2);
-    max-width: 52ch;
-    margin-top: var(--space-s);
+    max-width: 50ch;
+    margin: var(--space-xs) 0 0 auto;
+    padding-right: var(--space-l);
   }
 
   .layer-list {
@@ -193,9 +245,19 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
   }
 
   @media (max-width: 52rem) {
-    .hero {
+    .hero__inner {
       grid-template-columns: minmax(0, 1fr);
-      min-height: 0;
+    }
+    .hero__viz {
+      margin-right: -1rem;
+      margin-left: -1rem;
+    }
+    .hero__caption {
+      margin-left: 1rem;
+      padding-right: 1rem;
+    }
+    .hero__atmos {
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
     }
   }
 </style>

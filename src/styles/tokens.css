@@ -50,6 +50,22 @@
   --radius-chip: 4px;
   --radius-media: 12px;
 
+  /* Elevation: a hairline ring barely darker than the surface, a tight contact shadow,
+     and a wide diffuse one. Stacked, never a single flat box-shadow. */
+  --ring: 0 0 0 1px rgb(13 27 36 / 0.07);
+  --shadow-flat: var(--ring), 0 1px 2px rgb(13 27 36 / 0.04);
+  --shadow-raised: var(--ring), 0 1px 2px rgb(13 27 36 / 0.07), 0 4px 10px -2px rgb(13 27 36 / 0.06),
+    0 18px 36px -12px rgb(13 27 36 / 0.14);
+  --shadow-lifted: var(--ring), 0 1px 2px rgb(13 27 36 / 0.08), 0 8px 18px -4px rgb(13 27 36 / 0.08),
+    0 36px 72px -20px rgb(13 27 36 / 0.24);
+
+  /* Display vs. body leading: the gap between them is itself a hierarchy signal */
+  --leading-display: 0.96;
+  --leading-heading: 1.12;
+  --leading-body: 1.65;
+  --tracking-display: -0.035em;
+  --tracking-support: 0.006em;
+
   --measure: 68ch;
   --page-max: 76rem;
 }

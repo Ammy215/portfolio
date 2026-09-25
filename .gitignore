@@ -31,3 +31,5 @@ pnpm-debug.log*
 
 # private build brief (local only)
 portfolio-website-master-prompt.md
+reference/
+visual-reference-fix.md

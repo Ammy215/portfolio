@@ -220,7 +220,7 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
       const left = tmp.x < -0.02;
       el.dataset.side = left ? 'left' : 'right';
       // keep every label fully inside the stage on narrow screens
-      const lw = el.offsetWidth + 12;
+      const lw = el.offsetWidth + 24;
       let x = ((tmp.x + 1) / 2) * w;
       x = left ? Math.max(lw, x) : Math.min(w - lw, x);
       el.style.transform = `translate(${x}px, ${((1 - tmp.y) / 2) * h}px)`;

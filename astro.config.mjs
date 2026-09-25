@@ -19,7 +19,7 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: 'Geist',
       cssVariable: '--font-geist',
-      weights: ['400', '500', '700'],
+      weights: ['300', '400', '500', '600', '700'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],
