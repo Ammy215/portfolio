@@ -1,0 +1,201 @@
+---
+import { layers, nodes, hubs } from '../data/graph';
+
+const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l.id)! }));
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__text">
+    <h1 id="hero-title">Ammar Badlawala</h1>
+    <p class="hero__identity">
+      Cybersecurity, networking and AI. I build things to understand them, break them to learn how they fail, and automate what I can to make them better.
+    </p>
+    <p class="hero__status">
+      B.Sc. IT graduate, early in my career, building and shipping real security tools.
+    </p>
+    <div class="hero__actions">
+      <a class="btn btn--solid" href="#work">See what I've shipped</a>
+      <a class="btn" href="#about">About me</a>
+    </div>
+  </div>
+
+  <figure class="hero__viz" aria-labelledby="viz-caption">
+    <div class="hero__stage" data-hero-stage>
+      <canvas class="hero__canvas" aria-hidden="true"></canvas>
+      <div class="hero__labels" data-hero-labels>
+        {nodes.map((n) => (
+          <a class:list={['node-label', `node-label--${n.inProgress ? 'alert' : n.channel}`]} href={`/projects/${n.slug}`} data-slug={n.slug}>
+            {n.name}
+          </a>
+        ))}
+      </div>
+    </div>
+    <figcaption id="viz-caption" class="hero__caption">
+      Seven separate projects, placed on the defense layer each one covers, from first contact on the outside to correlation at the centre. Arcs show real shared dependencies.
+    </figcaption>
+
+    <!-- Same data as text: shown when WebGL isn't available, always available to screen readers. -->
+    <div class="hero__fallback" data-hero-fallback>
+      <ol class="layer-list">
+        {byLayer.map((l) => (
+          <li>
+            <span class="data">{l.label}</span>
+            <a href={`/projects/${l.node.slug}`}>{l.node.name}</a>
+          </li>
+        ))}
+      </ol>
+      <ul class="hub-list">
+        {hubs.map((h) => (
+          <li>
+            <span class="data">{h.label}</span>: shared by {h.projects.map((s) => nodes.find((n) => n.slug === s)!.name).join(', ')}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </figure>
+</section>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-hero-stage]');
+  const fallback = document.querySelector<HTMLElement>('[data-hero-fallback]');
+  const canvas = stage?.querySelector('canvas');
+  const labels = stage?.querySelector<HTMLElement>('[data-hero-labels]');
+
+  const hasWebGL2 = (() => {
+    try {
+      return !!document.createElement('canvas').getContext('webgl2');
+    } catch {
+      return false;
+    }
+  })();
+
+  if (stage && fallback && canvas && labels && hasWebGL2) {
+    stage.classList.add('is-live');
+    fallback.classList.add('visually-hidden');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const boot = () =>
+      import('../scripts/hero/scene').then(({ initHero }) => initHero({ canvas, labels, reducedMotion }));
+    // keep Three.js off the critical path: text paints first
+    if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1200 });
+    else setTimeout(boot, 200);
+  }
+</script>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-l);
+    align-items: center;
+    min-height: min(92vh, 56rem);
+    padding-block: var(--space-xl) var(--space-l);
+  }
+  .hero__text h1 {
+    margin-bottom: var(--space-m);
+  }
+  .hero__identity {
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--ink);
+  }
+  .hero__status {
+    color: var(--ink-2);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+
+  .hero__viz {
+    margin: 0;
+  }
+  .hero__stage {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    display: none;
+  }
+  .hero__stage.is-live {
+    display: block;
+  }
+  .hero__canvas {
+    width: 100%;
+    height: 100%;
+    /* incoming noise fades in from the edges instead of being clipped by the canvas box */
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
+  }
+  .hero__labels {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .node-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0.7rem 0 0 0.6rem;
+    font-family: var(--font-data);
+    font-size: var(--step--1);
+    line-height: 1;
+    padding: 0.3rem 0.45rem;
+    border-radius: var(--radius-chip);
+    background: var(--panel);
+    color: var(--ink);
+    text-decoration: none;
+    border-left: 3px solid currentColor;
+    pointer-events: auto;
+    white-space: nowrap;
+  }
+  .node-label[data-side='left'] {
+    translate: -100% 0;
+    margin-left: -0.6rem;
+    border-left-width: 0;
+    border-right-width: 3px;
+    border-right-style: solid;
+  }
+  .node-label--signal { border-color: var(--signal); }
+  .node-label--link { border-color: var(--link); }
+  .node-label--alert { border-color: var(--alert); }
+  .node-label:hover,
+  .node-label:focus-visible {
+    background: var(--ink);
+    color: var(--ground);
+  }
+
+  .hero__caption {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    max-width: 52ch;
+    margin-top: var(--space-s);
+  }
+
+  .layer-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-m) 0;
+    display: grid;
+    gap: var(--space-2xs);
+  }
+  .layer-list li {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: var(--space-s);
+  }
+  .layer-list .data,
+  .hub-list .data {
+    color: var(--ink-2);
+  }
+  .hub-list {
+    padding-left: 1.1rem;
+    font-size: var(--step--1);
+  }
+
+  @media (max-width: 52rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 0;
+    }
+  }
+</style>

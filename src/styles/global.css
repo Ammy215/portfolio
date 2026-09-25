@@ -1,0 +1,135 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-s);
+  text-wrap: balance;
+}
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); letter-spacing: -0.01em; }
+
+p { margin: 0 0 var(--space-m); max-width: var(--measure); text-wrap: pretty; }
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+img, svg, canvas { display: block; max-width: 100%; }
+
+code, kbd, .data {
+  font-family: var(--font-data);
+  font-size: 0.92em;
+}
+
+.wrap {
+  width: min(100% - 2rem, var(--page-max));
+  margin-inline: auto;
+}
+
+/* Buttons: plain words, no arrows, no pills */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-chip);
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 120ms, color 120ms;
+}
+.btn:hover {
+  background: var(--panel);
+}
+.btn--solid {
+  background: var(--ink);
+  color: var(--ground);
+}
+.btn--solid:hover {
+  background: var(--link);
+  border-color: var(--link);
+}
+
+/* Status: a pixel square + words. Colour is never the only signal. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-data);
+  font-size: var(--step--1);
+  line-height: 1;
+}
+.status::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  background: currentColor;
+}
+.status--live { color: var(--signal); }
+.status--partial { color: var(--link); }
+.status--progress { color: var(--alert); }
+
+.skip-link {
+  position: absolute;
+  left: var(--space-s);
+  top: -3rem;
+  background: var(--ink);
+  color: var(--ground);
+  padding: var(--space-xs) var(--space-s);
+  border-radius: var(--radius-chip);
+  z-index: 10;
+}
+.skip-link:focus { top: var(--space-s); }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,181 @@
+---
+// Internal style tile for design review. Not linked, not in the sitemap, noindex. Removed at launch.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+
+const swatches = [
+  { name: 'ground', hex: '#e7edeb', role: 'Page background: cool, printed-topology paper' },
+  { name: 'panel', hex: '#f4f7f6', role: 'Raised surfaces: project rows, chips' },
+  { name: 'ink', hex: '#0d1b24', role: 'Text, hard edges (README navy, lifted)' },
+  { name: 'ink-2', hex: '#3b4a53', role: 'Secondary text' },
+  { name: 'signal', hex: '#086d3f', role: 'Logs and detection channel (from #39ff88)' },
+  { name: 'link', hex: '#0a5f86', role: 'Network channel and links (from #38bdf8)' },
+  { name: 'alert', hex: '#9a5200', role: 'Status, in progress (from #ffb454)' },
+  { name: 'noise', hex: '#8c9aa2', role: 'Decorative only: particles, rules' },
+];
+---
+
+<BaseLayout title="Style tile" description="Internal design review page." noindex>
+  <div class="wrap">
+    <Hero />
+
+    <section class="tile">
+      <h2>Palette</h2>
+      <p>Three channels from the GitHub profile's three monitors, deepened to pass WCAG AA as text on a light ground. The bright originals only appear as emissive colour inside the 3D scene.</p>
+      <ul class="swatches">
+        {swatches.map((s) => (
+          <li>
+            <span class="swatch" style={`background:${s.hex}`}></span>
+            <span class="data">--{s.name}  {s.hex}</span>
+            <span class="role">{s.role}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="tile">
+      <h2>Type</h2>
+      <p class="data">Geist 400/500/700 for reading. Departure Mono for data only.</p>
+      <p style="font-size:var(--step-4);font-weight:700;letter-spacing:-0.02em;line-height:1.05;margin:0">Built to understand</p>
+      <p style="font-size:var(--step-3);font-weight:700;letter-spacing:-0.02em;margin:0">Broken to learn how it fails</p>
+      <p style="font-size:var(--step-2);font-weight:700;margin:0">Automated to make it better</p>
+      <p>Body copy sits at a comfortable measure. Signature rules weren't URL-decoding input, so 3 of 4 encoded attacks were invisible until the decoder was fixed. Specific, true details like that carry the credibility, so the type stays out of their way.</p>
+      <p class="data">fastapi  postgresql  react 18  jwt + bcrypt  mitre att&amp;ck</p>
+    </section>
+
+    <section class="tile">
+      <h2>Status</h2>
+      <p class="statuses">
+        <span class="status status--live">Live</span>
+        <span class="status status--partial">HTTP honeypot live, other protocols not yet deployed</span>
+        <span class="status status--progress">In progress</span>
+      </p>
+    </section>
+
+    <section class="tile">
+      <h2>Project row</h2>
+      <article class="row row--signal">
+        <p class="row__layer data">Correlation</p>
+        <div class="row__body">
+          <h3><a href="/projects/mini-siem">Mini SIEM</a></h3>
+          <p>A SIEM built from scratch: ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK IDs, and correlates an attacker's alerts into a single incident.</p>
+          <dl class="row__meta">
+            <div><dt>Status</dt><dd><span class="status status--live">Live</span></dd></div>
+            <div><dt>Stack</dt><dd class="data">FastAPI, PostgreSQL (Neon), React 18, own JWT + bcrypt + RBAC</dd></div>
+          </dl>
+        </div>
+      </article>
+      <article class="row row--alert">
+        <p class="row__layer data">Logs</p>
+        <div class="row__body">
+          <h3><a href="/projects/intelligent-log-analyzer">Intelligent Log Analyzer</a></h3>
+          <p>Parses SSH, Apache and Windows Event logs and scores brute force, port scans and credential stuffing with a weighted threat score.</p>
+          <dl class="row__meta">
+            <div><dt>Status</dt><dd><span class="status status--progress">In progress</span></dd></div>
+            <div><dt>Stack</dt><dd class="data">FastAPI, MongoDB Atlas, Supabase, Upstash Redis, React 18</dd></div>
+          </dl>
+        </div>
+      </article>
+    </section>
+
+    <section class="tile">
+      <h2>Quote</h2>
+      <blockquote class="quote">
+        <p>Consistency doesn't ask how I feel about it. It just asks if I showed up.</p>
+      </blockquote>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .tile {
+    padding-block: var(--space-xl);
+    border-top: 2px solid var(--ink);
+  }
+  .swatches {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--space-m);
+  }
+  .swatches li {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+  .swatch {
+    height: 4.5rem;
+    border-radius: var(--radius-media);
+    border: 1px solid rgb(13 27 36 / 0.15);
+  }
+  .role {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .statuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-l);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: var(--space-m);
+    padding: var(--space-m) var(--space-m) var(--space-m) 0;
+    background: var(--panel);
+    border-left: 6px solid;
+    margin-bottom: var(--space-s);
+  }
+  .row--signal { border-left-color: var(--signal); }
+  .row--alert { border-left-color: var(--alert); }
+  .row__layer {
+    margin: 0.3rem 0 0 var(--space-m);
+    color: var(--ink-2);
+  }
+  .row__body h3 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .row__body h3 a:hover {
+    text-decoration: underline;
+  }
+  .row__meta {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+  }
+  .row__meta div {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: var(--space-s);
+  }
+  .row__meta dt {
+    color: var(--ink-2);
+    font-size: var(--step--1);
+  }
+  .row__meta dd {
+    margin: 0;
+  }
+
+  .quote {
+    margin: 0;
+    padding-left: var(--space-m);
+    border-left: 3px solid var(--noise);
+  }
+  .quote p {
+    font-size: var(--step-2);
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  @media (max-width: 40rem) {
+    .row {
+      grid-template-columns: 1fr;
+      padding-left: var(--space-m);
+    }
+    .row__layer {
+      margin-left: 0;
+    }
+  }
+</style>
