@@ -1,5 +1,5 @@
 ---
-import { profile, links } from '../data/profile';
+import { profile, links, readme } from '../data/profile';
 import { nodes } from '../data/graph';
 import { projectHref, projectHrefLabel } from '../data/projects';
 
@@ -60,7 +60,8 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
               <a href={l.href} {...(isExternal(l.href) ? ext : {})}>{l.label}</a>
             </li>
           ))}
-          {profile.resume && <li><a href={profile.resume}>Resume</a></li>}
+          <li><a href={readme.href} {...ext}>{readme.label}</a></li>
+        {profile.resume && <li><a href={profile.resume}>Resume</a></li>}
         </ul>
       </nav>
     </div>

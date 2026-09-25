@@ -16,6 +16,9 @@ export const links = [
   { label: 'Email', href: 'mailto:ammar.badlawala@gmail.com' },
 ];
 
+// GitHub profile README. Lives in Ammy215/readme-profile (GitHub redirects this URL if the repo is renamed).
+export const readme = { label: 'GitHub README', href: 'https://github.com/Ammy215/readme-profile' };
+
 export const certifications = [
   {
     issuer: 'Cisco',
