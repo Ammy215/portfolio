@@ -10,10 +10,15 @@ export interface Layer {
   label: string;
 }
 
+// Where a project sits relative to the perimeter in the hero diorama:
+// outside = meets traffic first (sensors, decoys), inside = analysis, core = correlation.
+export type Zone = 'outside' | 'inside' | 'core';
+
 export interface ProjectNode {
   slug: string;
   name: string;
   layer: string;
+  zone: Zone;
   channel: Channel;
   inProgress?: boolean;
 }
@@ -36,13 +41,13 @@ export const layers: Layer[] = [
 ];
 
 export const nodes: ProjectNode[] = [
-  { slug: 'honeyshield', name: 'HoneyShield', layer: 'deception', channel: 'link' },
-  { slug: 'netsentinel', name: 'NetSentinel', layer: 'network', channel: 'link' },
-  { slug: 'phishguard-ai', name: 'phishguard-ai', layer: 'web', channel: 'link' },
-  { slug: 'fileshield', name: 'FileShield', layer: 'files', channel: 'signal' },
-  { slug: 'intelligent-log-analyzer', name: 'Intelligent Log Analyzer', layer: 'logs', channel: 'signal', inProgress: true },
-  { slug: 'threathunter', name: 'ThreatHunter', layer: 'intel', channel: 'link' },
-  { slug: 'mini-siem', name: 'Mini SIEM', layer: 'correlation', channel: 'signal' },
+  { slug: 'honeyshield', name: 'HoneyShield', layer: 'deception', zone: 'outside', channel: 'link' },
+  { slug: 'netsentinel', name: 'NetSentinel', layer: 'network', zone: 'outside', channel: 'link' },
+  { slug: 'phishguard-ai', name: 'phishguard-ai', layer: 'web', zone: 'outside', channel: 'link' },
+  { slug: 'fileshield', name: 'FileShield', layer: 'files', zone: 'inside', channel: 'signal' },
+  { slug: 'intelligent-log-analyzer', name: 'Intelligent Log Analyzer', layer: 'logs', zone: 'inside', channel: 'signal', inProgress: true },
+  { slug: 'threathunter', name: 'ThreatHunter', layer: 'intel', zone: 'inside', channel: 'link' },
+  { slug: 'mini-siem', name: 'Mini SIEM', layer: 'correlation', zone: 'core', channel: 'signal' },
 ];
 
 export const hubs: Hub[] = [

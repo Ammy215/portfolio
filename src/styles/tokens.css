@@ -1,41 +1,54 @@
 /*
-  Design tokens. Three semantic channels echo the GitHub profile's three monitors:
-  signal (green, logs/detection), link (cyan, network), alert (amber, status).
-  Bright originals (#39ff88 #38bdf8 #ffb454) live only inside the 3D scene, never as text.
+  Design tokens.
+  The GitHub profile's three monitor colours are used at full strength as large surfaces:
+  cyan #38bdf8 (network), mint from #39ff88 (logs/detection), amber #ffb454 (status/dashboards).
+  Type on them is always deep ink. White objects sit on top, like a lit model.
+  The "world" is the dominant hue that floods the hero; "accent" is its complement.
   Every text/background pair is verified by scripts/contrast-check.mjs.
 */
 :root {
-  /* Surfaces */
-  --ground: #e7edeb;
-  --panel: #f4f7f6;
+  /* Base */
+  --ink: #0b1620;
+  --ink-2: #24313a;
+  --paper: #eef2f0;
+  --white: #ffffff;
 
-  /* Text */
-  --ink: #0d1b24;
-  --ink-2: #3b4a53;
-
-  /* Channels */
-  --signal: #086d3f;
-  --link: #0a5f86;
-  --alert: #9a5200;
+  /* Channels, full strength */
+  --cyan: #38bdf8;
+  --cyan-deep: #0ea5e9;
+  --cyan-pale: #bdeafd;
+  --mint: #4ff59a;
+  --amber: #ffb454;
+  --amber-deep: #ff9b2f;
+  --amber-pale: #ffe2b8;
 
   /* Decorative only (particles, rules) — never used for text */
   --noise: #8c9aa2;
 
-  /* 3D-scene emissives */
-  --glow-signal: #39ff88;
-  --glow-link: #38bdf8;
-  --glow-alert: #ffb454;
+  /* World: cyan by default, amber as the alternative */
+  --world: var(--cyan);
+  --world-deep: var(--cyan-deep);
+  --world-pale: var(--cyan-pale);
+  --accent: var(--amber);
+  --accent-deep: var(--amber-deep);
 
   /* Type */
-  --font-body: var(--font-geist), system-ui, sans-serif;
+  --font-body: var(--font-archivo), system-ui, sans-serif;
   --font-data: var(--font-departure), ui-monospace, monospace;
+  --wdth-display: 'wdth' 62;
+  --wdth-heading: 'wdth' 75;
 
-  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
-  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.1rem);
-  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
-  --step-3: clamp(2.1rem, 1.7rem + 2vw, 3.4rem);
-  --step-4: clamp(2.8rem, 2rem + 4vw, 5.2rem);
+  --step--1: clamp(0.84rem, 0.8rem + 0.15vw, 0.92rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --step-2: clamp(1.6rem, 1.3rem + 1.4vw, 2.4rem);
+  --step-3: clamp(2.4rem, 1.6rem + 3.6vw, 4.6rem);
+  --step-4: clamp(3.6rem, 2rem + 8vw, 9rem);
+  --step-5: clamp(4.4rem, 1.8rem + 11.5vw, 12.5rem);
+
+  --leading-display: 0.86;
+  --leading-heading: 0.95;
+  --leading-body: 1.6;
 
   /* Space */
   --space-2xs: 0.25rem;
@@ -45,27 +58,26 @@
   --space-l: 2rem;
   --space-xl: 3.5rem;
   --space-2xl: 6rem;
+  --space-3xl: 9rem;
 
-  /* Radius varies by role, not one value everywhere */
-  --radius-chip: 4px;
-  --radius-media: 12px;
+  /* Radius by role */
+  --radius-chip: 999px;
+  --radius-card: 22px;
+  --radius-inset: 14px;
 
-  /* Elevation: a hairline ring barely darker than the surface, a tight contact shadow,
-     and a wide diffuse one. Stacked, never a single flat box-shadow. */
-  --ring: 0 0 0 1px rgb(13 27 36 / 0.07);
-  --shadow-flat: var(--ring), 0 1px 2px rgb(13 27 36 / 0.04);
-  --shadow-raised: var(--ring), 0 1px 2px rgb(13 27 36 / 0.07), 0 4px 10px -2px rgb(13 27 36 / 0.06),
-    0 18px 36px -12px rgb(13 27 36 / 0.14);
-  --shadow-lifted: var(--ring), 0 1px 2px rgb(13 27 36 / 0.08), 0 8px 18px -4px rgb(13 27 36 / 0.08),
-    0 36px 72px -20px rgb(13 27 36 / 0.24);
+  /* Elevation: contact shadow + wide soft shadow, tinted with ink */
+  --shadow-raised: 0 1px 2px rgb(11 22 32 / 0.1), 0 10px 24px -8px rgb(11 22 32 / 0.18);
+  --shadow-lifted: 0 2px 4px rgb(11 22 32 / 0.1), 0 28px 50px -18px rgb(11 22 32 / 0.35);
 
-  /* Display vs. body leading: the gap between them is itself a hierarchy signal */
-  --leading-display: 0.96;
-  --leading-heading: 1.12;
-  --leading-body: 1.65;
-  --tracking-display: -0.035em;
-  --tracking-support: 0.006em;
+  --measure: 64ch;
+  --page-max: 80rem;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+}
 
-  --measure: 68ch;
-  --page-max: 76rem;
+:root[data-world='amber'] {
+  --world: var(--amber);
+  --world-deep: var(--amber-deep);
+  --world-pale: var(--amber-pale);
+  --accent: var(--cyan);
+  --accent-deep: var(--cyan-deep);
 }

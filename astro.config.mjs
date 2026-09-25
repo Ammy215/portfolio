@@ -16,13 +16,19 @@ export default defineConfig({
   ],
   fonts: [
     {
+      // One variable family for everything readable: condensed Black for display, normal width for body.
       provider: fontProviders.google(),
-      name: 'Geist',
-      cssVariable: '--font-geist',
-      weights: ['300', '400', '500', '600', '700'],
+      name: 'Archivo',
+      cssVariable: '--font-archivo',
+      weights: ['100 900'],
       styles: ['normal'],
       subsets: ['latin'],
-      fallbacks: ['system-ui', 'sans-serif'],
+      fallbacks: ['Arial Narrow', 'system-ui', 'sans-serif'],
+      options: {
+        experimental: {
+          variableAxis: { wdth: [['62', '125']] },
+        },
+      },
     },
     {
       // Self-hosted: not on Google/Fontsource. MIT licensed, see src/assets/fonts/DepartureMono-LICENSE.txt

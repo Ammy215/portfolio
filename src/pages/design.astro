@@ -4,375 +4,503 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 
 const swatches = [
-  { name: 'ground', hex: '#e7edeb' },
-  { name: 'panel', hex: '#f4f7f6' },
-  { name: 'ink', hex: '#0d1b24' },
-  { name: 'ink-2', hex: '#3b4a53' },
-  { name: 'signal', hex: '#086d3f' },
-  { name: 'link', hex: '#0a5f86' },
-  { name: 'alert', hex: '#9a5200' },
-  { name: 'noise', hex: '#8c9aa2' },
+  { name: 'cyan', hex: '#38bdf8', note: 'network, from the profile' },
+  { name: 'mint', hex: '#4ff59a', note: 'logs, from #39ff88' },
+  { name: 'amber', hex: '#ffb454', note: 'status, from the profile' },
+  { name: 'ink', hex: '#0b1620', note: 'all type' },
+  { name: 'paper', hex: '#eef2f0', note: 'reading sections' },
+  { name: 'white', hex: '#ffffff', note: 'objects, cards' },
 ];
 ---
 
 <BaseLayout title="Style tile" description="Internal design review page." noindex>
-  <div style="--hero-overlap: clamp(4rem, 10vw, 8rem)">
-    <Hero />
-  </div>
+  <Hero />
 
-  <!-- Technique 5: this section pulls up into the hero, the flagship card crosses the hero's slanted edge. -->
+  <!-- ============ WORK: colour-block bento ============ -->
   <section id="work" class="work wrap" aria-labelledby="work-title">
-    <div class="work__intro">
-      <h2 id="work-title" class="split-heading">
-        Shipped work.{' '}<span class="soft">Seven platforms, each with the real story of what broke and how it got fixed.</span>
+    <header class="section-head">
+      <h2 id="work-title">Shipped<br /> work</h2>
+      <p class="support">
+        Seven platforms. Each one has a real story: what it does, what broke in testing, and how it got fixed.
+      </p>
+      <p class="section-head__count data" aria-hidden="true">07</p>
+    </header>
+
+    <div class="bento">
+      <article class="block block--cyan bento__flag">
+        <div class="block__top">
+          <span class="tag">correlation</span>
+          <span class="tag tag--live">live</span>
+        </div>
+        <h3 class="block__title block__title--xl"><a class="block__link" href="/projects/mini-siem">Mini SIEM</a></h3>
+        <p class="block__lede">
+          A SIEM built from scratch. Ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK IDs, and correlates one attacker's alerts into a single incident.
+        </p>
+        <dl class="evidence">
+          <div><dt>27</dt><dd>build phases, grown from a 13-phase plan</dd></div>
+          <div><dt>600+</dt><dd>backend tests, CI on an ephemeral database</dd></div>
+          <div><dt>3 of 4</dt><dd>URL-encoded attacks were missed until the rules decoded input. Found and fixed.</dd></div>
+        </dl>
+        <p class="block__stack data">FastAPI / PostgreSQL / React 18 / own JWT + RBAC</p>
+      </article>
+
+      <article class="block block--ink bento__wide">
+        <div class="block__top">
+          <span class="tag">network traffic</span>
+          <span class="tag tag--live">live</span>
+        </div>
+        <h3 class="block__title"><a class="block__link" href="/projects/netsentinel">NetSentinel</a></h3>
+        <p class="block__lede support">
+          Upload a PCAP, get scored flows back. Isolation Forest and One-Class SVM on real captured traffic, with RAG-grounded AI explaining each anomaly.
+        </p>
+      </article>
+
+      <article class="block block--amber">
+        <div class="block__top">
+          <span class="tag">deception</span>
+        </div>
+        <h3 class="block__title"><a class="block__link" href="/projects/honeyshield">HoneyShield</a></h3>
+        <p class="block__lede">Multi-protocol honeypot on raw asyncio sockets. Spots coordinated campaigns by ASN and time window.</p>
+        <span class="tag tag--partial tag--wrap">http live; ssh, ftp, telnet built but not deployed</span>
+      </article>
+
+      <article class="block block--wip">
+        <div class="block__top">
+          <span class="tag">logs</span>
+          <span class="tag tag--progress">in progress</span>
+        </div>
+        <h3 class="block__title"><a class="block__link" href="/projects/intelligent-log-analyzer">Log Analyzer</a></h3>
+        <p class="block__lede">A 12-phase enterprise rebuild. Final QA and deploy still to come.</p>
+      </article>
+
+      <article class="block block--mint">
+        <div class="block__top">
+          <span class="tag">web and urls</span>
+          <span class="tag tag--live">live</span>
+        </div>
+        <h3 class="block__title"><a class="block__link" href="/projects/phishguard-ai">phishguard&#8209;ai</a></h3>
+        <p class="block__lede">Random Forest plus a 16-rule heuristic engine, shipped with a working Chrome extension.</p>
+      </article>
+
+      <article class="block">
+        <div class="block__top">
+          <span class="tag tag--ghost">files</span>
+          <span class="tag tag--live">live</span>
+        </div>
+        <h3 class="block__title"><a class="block__link" href="/projects/fileshield">FileShield</a></h3>
+        <p class="block__lede">Hashing, entropy and YARA matching. My first shipped project, and my first real production outage.</p>
+      </article>
+
+      <article class="block block--pale bento__wide">
+        <div class="block__top">
+          <span class="tag">threat intel</span>
+          <span class="tag tag--live">live, private repo</span>
+        </div>
+        <h3 class="block__title"><a class="block__link" href="/projects/threathunter">ThreatHunter</a></h3>
+        <p class="block__lede">
+          IOC search across IP, domain, hash and URL, fanned out to AbuseIPDB, OTX, IPInfo, VirusTotal and NIST NVD. 89 automated tests and an adversarial testing pass: 8 findings, each fixed and retested.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT: statement + stickers ============ -->
+  <section id="about" class="about wrap" aria-labelledby="about-title">
+    <div class="about__text">
+      <h2 id="about-title" class="about__statement">
+        I build things <mark>to understand</mark> them.
       </h2>
+      <p class="about__body">
+        B.Sc. Information Technology, CGPA 9.84 (A+). No industry job yet. I'm on a self-directed path into cybersecurity engineering, which means building real, working tools instead of stopping at tutorials, then attacking them to see where they fail.
+      </p>
     </div>
-
-    <article class="card card--lifted flagship">
-      <header class="card__meta">
-        <span class="channel channel--signal data">Correlation</span>
-        <span class="status status--live">Live</span>
-      </header>
-      <h3 class="flagship__title">Mini SIEM</h3>
-      <p class="card__lede">
-        <strong>A SIEM built from scratch.</strong> Ingests logs in 11 auto-detected formats, runs 15 detection rules tagged with MITRE ATT&amp;CK technique IDs, and correlates one attacker's alerts into a single incident.
-      </p>
-      <dl class="evidence data">
-        <div><dt>Scope</dt><dd>planned as 13 phases, grew to 27 once the real scope was clear</dd></div>
-        <div><dt>Tests</dt><dd>600+ backend tests, CI against an ephemeral database</dd></div>
-        <div><dt>Found</dt><dd>3 of 4 URL-encoded attacks slipped past signature rules until input was decoded</dd></div>
-        <div><dt>Found</dt><dd>forged proxy headers could bypass rate limiting; fixed with shared-secret validation</dd></div>
-      </dl>
-      <p class="card__stack data">FastAPI, PostgreSQL (Neon), React 18, own JWT + bcrypt + RBAC</p>
-      <p class="card__links">
-        <a href="/projects/mini-siem">Read the case study</a>
-        <a href="https://mini-siem-five.vercel.app" rel="noopener noreferrer">Live demo</a>
-      </p>
-    </article>
-
-    <div class="work__grid">
-      <article class="card">
-        <header class="card__meta">
-          <span class="channel channel--link data">Network traffic</span>
-          <span class="status status--live">Live</span>
-        </header>
-        <h3><a href="/projects/netsentinel">NetSentinel</a></h3>
-        <p class="card__lede">
-          <strong>PCAP in, scored flows out.</strong> Assembles flows from real captured traffic, scores anomalies with Isolation Forest and One-Class SVM, and uses RAG-grounded AI to explain why.
-        </p>
-        <p class="card__stack data">FastAPI, scikit-learn, Scapy + PyShark, Supabase</p>
-      </article>
-
-      <article class="card">
-        <header class="card__meta">
-          <span class="channel channel--link data">Deception</span>
-          <span class="status status--partial">HTTP live</span>
-        </header>
-        <h3><a href="/projects/honeyshield">HoneyShield</a></h3>
-        <p class="card__lede">
-          <strong>Multi-protocol honeypot on raw asyncio sockets.</strong> Groups attacks by ASN and time window to spot coordinated campaigns. SSH, FTP and Telnet are built and tested but not deployed yet.
-        </p>
-        <p class="card__stack data">Python asyncio, SQLite3, Streamlit, Gemini</p>
-      </article>
-
-      <article class="card card--flat">
-        <header class="card__meta">
-          <span class="channel channel--alert data">Logs</span>
-          <span class="status status--progress">In progress</span>
-        </header>
-        <h3><a href="/projects/intelligent-log-analyzer">Intelligent Log Analyzer</a></h3>
-        <p class="card__lede">
-          <strong>A 12-phase enterprise rebuild.</strong> Parses SSH, Apache and Windows Event logs and scores brute force, port scans and credential stuffing. Final QA and deploy still to come.
-        </p>
-        <p class="card__stack data">FastAPI, MongoDB Atlas, Supabase, Upstash Redis</p>
-      </article>
+    <div class="about__stickers" aria-label="Photo and pixel-art character (coming soon)">
+      <figure class="sticker sticker--photo">
+        <div class="sticker__ph">Photo<br />coming</div>
+        <figcaption class="data">the real person</figcaption>
+      </figure>
+      <figure class="sticker sticker--pixel">
+        <div class="sticker__ph sticker__ph--pixel">Pixel<br />character</div>
+        <figcaption class="data">the build identity</figcaption>
+      </figure>
     </div>
   </section>
 
-  <!-- Techniques 1 + 2, annotated for review -->
-  <section class="specimen wrap" aria-labelledby="spec-title">
-    <h2 id="spec-title" class="visually-hidden">Type specimen</h2>
-    <div class="specimen__display">
-      <p class="specimen__big">Built to<br /> understand.</p>
-      <p class="specimen__support">Broken to learn how it fails, then automated to make it better.</p>
-    </div>
-    <dl class="specimen__notes data">
-      <div><dt>Display</dt><dd>Geist 700, leading 0.96, tracking −0.035em</dd></div>
-      <div><dt>Support</dt><dd>Geist 300, leading 1.5, tracking +0.006em, ink-2</dd></div>
-      <div><dt>Body</dt><dd>Geist 400, leading 1.65</dd></div>
-      <div><dt>Data</dt><dd>Departure Mono, facts only</dd></div>
-    </dl>
-    <p class="specimen__body">
-      Body copy stays loose so long case studies read easily. Signature rules weren't URL-decoding input, so 3 of 4 encoded attacks were invisible until the decoder was fixed. Specific details like that carry the credibility, so the body type stays out of their way.
-    </p>
-  </section>
-
-  <!-- Spacious, off-centre section after two dense ones: pacing -->
-  <section class="quote-band" aria-label="Quote">
-    <blockquote class="quote wrap">
-      <p>Showing up when it's easy was never the test. <span class="strong">Showing up when it isn't, is.</span></p>
+  <!-- ============ QUOTE: full-bleed accent band ============ -->
+  <section class="quote-band grain" aria-label="Quote">
+    <blockquote class="wrap">
+      <p>
+        <span class="quote__soft">I didn't sign up for the parts that were easy.</span>
+        I signed up for the whole thing.
+      </p>
     </blockquote>
   </section>
 
-  <!-- Tight section: palette strip -->
-  <section class="palette wrap" aria-labelledby="palette-title">
-    <h2 id="palette-title" class="split-heading">Palette. <span class="soft">Three monitor colours from the GitHub profile, deepened to pass AA.</span></h2>
+  <!-- ============ Review key ============ -->
+  <section class="key wrap" aria-label="Design key">
     <ul class="swatches">
       {swatches.map((s) => (
         <li>
           <span class="swatch" style={`background:${s.hex}`}></span>
-          <span class="data">{s.name}</span>
-          <span class="data hex">{s.hex}</span>
+          <span class="swatch__name">{s.name}</span>
+          <span class="data">{s.hex}</span>
+          <span class="swatch__note">{s.note}</span>
         </li>
       ))}
     </ul>
+    <p class="data key__type">Archivo, condensed 62 wdth / 900 for display, 100 wdth / 400-500 for reading. Departure Mono for data.</p>
   </section>
+
+  <!-- Review-only: switch the world colour -->
+  <div class="world-switch" role="group" aria-label="World colour">
+    <button type="button" data-world-btn="cyan" aria-pressed="true">Cyan world</button>
+    <button type="button" data-world-btn="amber" aria-pressed="false">Amber world</button>
+  </div>
 </BaseLayout>
 
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('[data-world-btn]');
+  const setWorld = (w: string) => {
+    if (w === 'cyan') delete document.documentElement.dataset.world;
+    else document.documentElement.dataset.world = w;
+    btns.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.worldBtn === w)));
+    document.dispatchEvent(new Event('worldchange'));
+  };
+  btns.forEach((b) => b.addEventListener('click', () => setWorld(b.dataset.worldBtn!)));
+  const fromUrl = new URLSearchParams(location.search).get('world');
+  if (fromUrl === 'amber') setWorld('amber');
+</script>
+
 <style>
-  /* ---------- Work: overlaps the hero ---------- */
-  .work {
-    position: relative;
-    z-index: 1;
-    margin-top: calc(-1 * clamp(4rem, 10vw, 8rem));
+  /* ---------- section header: huge left, small support right ---------- */
+  .section-head {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-areas:
-      'flag flag flag flag flag flag flag intro intro intro intro intro'
-      'grid grid grid grid grid grid grid grid grid grid grid grid';
-    column-gap: var(--space-l);
-    row-gap: var(--space-m);
-    padding-bottom: var(--space-xl);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: clamp(1.5rem, 4vw, 4rem);
+    margin-bottom: var(--space-l);
   }
-  .work__intro {
-    grid-area: intro;
-    align-self: end;
-    padding-bottom: var(--space-l);
-  }
-  .flagship {
-    grid-area: flag;
-    padding: var(--space-l);
-  }
-  .work__grid {
-    grid-area: grid;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-m);
-    /* shift the row right so it doesn't line up under the flagship: tension, not a table */
-    margin-left: clamp(0rem, 6vw, 5rem);
-    align-items: start;
-  }
-
-  .card__meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-s);
-    margin-bottom: var(--space-m);
-  }
-  .channel {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: var(--step--1);
-    color: var(--ink-2);
-  }
-  .channel::before {
-    content: '';
-    width: 0.55rem;
-    height: 0.55rem;
-  }
-  .channel--signal::before { background: var(--signal); }
-  .channel--link::before { background: var(--link); }
-  .channel--alert::before { background: var(--alert); }
-
-  .card h3 a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .card h3 a::after {
-    /* whole card is the click target, heading stays the accessible name */
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-  }
-  .card:has(h3 a:hover) {
-    box-shadow: var(--shadow-lifted);
-  }
-  .card:has(h3 a:focus-visible) {
-    outline: 2px solid var(--link);
-    outline-offset: 3px;
-  }
-  .card__lede {
-    color: var(--ink-2);
-    font-size: var(--step-0);
-  }
-  .card__lede strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-  .card__stack {
-    font-size: var(--step--1);
-    color: var(--ink-2);
+  .section-head h2 {
     margin: 0;
   }
+  .section-head .support {
+    margin: 0 0 0.6rem;
+  }
+  .section-head__count {
+    font-size: var(--step-2);
+    margin: 0 0 0.4rem;
+  }
 
-  .flagship__title {
-    font-size: var(--step-3);
-    line-height: var(--leading-display);
-    letter-spacing: var(--tracking-display);
-    font-weight: 700;
+  /* ---------- work ---------- */
+  .work {
+    padding-block: var(--space-2xl) var(--space-xl);
   }
-  .flagship .card__lede {
-    font-size: var(--step-1);
-    font-weight: 300;
-    line-height: 1.5;
-  }
-  .evidence {
-    margin: var(--space-m) 0;
-    padding: var(--space-m);
-    border-radius: 8px;
-    background: var(--ground);
-    box-shadow: inset 0 1px 2px rgb(13 27 36 / 0.08), inset 0 0 0 1px rgb(13 27 36 / 0.05);
-    font-size: var(--step--1);
+  .bento {
     display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: var(--space-s);
+  }
+  .bento__flag {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .bento__wide {
+    grid-column: span 2;
+  }
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+    min-height: 15rem;
+    container-type: inline-size;
+  }
+  .block--pale {
+    background: var(--world-pale);
+  }
+  .tag--wrap {
+    white-space: normal;
+    line-height: 1.25;
+    align-self: flex-start;
+  }
+  .block__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+  }
+  .block__title {
+    margin: auto 0 0;
+    /* sized to the card, so long names like PHISHGUARD-AI stay on one line */
+    font-size: clamp(1.7rem, 12cqi, 3rem);
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    line-height: 0.9;
+  }
+  .block__title--xl {
+    font-size: clamp(3.2rem, 16cqi, 6.5rem);
+    line-height: 0.84;
+  }
+  .block__lede {
+    margin: 0;
+    font-weight: 450;
+    line-height: 1.45;
+    max-width: 44ch;
+  }
+  .bento__flag .block__lede {
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .block__stack {
+    margin: 0;
+    font-size: var(--step--1);
+  }
+  .block--ink .tag {
+    background: rgb(255 255 255 / 0.12);
+    color: var(--white);
+  }
+  .block--ink .tag::before {
+    box-shadow: none;
+  }
+  .block--ink .block__lede {
+    color: rgb(255 255 255 / 0.85);
+  }
+  /* in progress: construction stripes along the top, honest about the status */
+  .block--wip {
+    background:
+      repeating-linear-gradient(135deg, var(--amber) 0 14px, var(--ink) 14px 28px) top / 100% 10px no-repeat,
+      var(--white);
+    padding-top: calc(clamp(1.25rem, 1rem + 1vw, 2rem) + 10px);
+  }
+
+  .evidence {
+    margin: var(--space-xs) 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-xs);
   }
   .evidence div {
-    display: grid;
-    grid-template-columns: 4rem 1fr;
-    gap: var(--space-s);
+    background: rgb(255 255 255 / 0.6);
+    border-radius: var(--radius-inset);
+    padding: 0.9rem 1rem;
   }
   .evidence dt {
-    color: var(--ink-2);
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    font-size: clamp(2rem, 1.5rem + 1.6vw, 2.9rem);
+    line-height: 0.9;
+    margin-bottom: 0.35rem;
   }
   .evidence dd {
     margin: 0;
-    line-height: 1.45;
-  }
-  .card__links {
-    display: flex;
-    gap: var(--space-m);
-    margin: var(--space-m) 0 0;
-    font-weight: 500;
+    font-size: var(--step--1);
+    line-height: 1.35;
   }
 
-  /* ---------- Specimen ---------- */
-  .specimen {
+  /* ---------- about ---------- */
+  .about {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    column-gap: var(--space-xl);
-    padding-block: var(--space-xl);
+    gap: var(--space-xl);
+    align-items: center;
+    padding-block: var(--space-2xl);
   }
-  .specimen__big {
-    font-size: clamp(3rem, 2rem + 4.5vw, 5.6rem);
-    font-weight: 700;
-    line-height: var(--leading-display);
-    letter-spacing: var(--tracking-display);
-    margin-bottom: var(--space-s);
+  .about__statement {
+    font-size: clamp(3rem, 1.6rem + 6vw, 7.5rem);
   }
-  .specimen__support {
+  .about__statement mark {
+    background: var(--world);
+    color: var(--ink);
+    padding: 0 0.12em;
+    border-radius: 0.1em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .about__body {
     font-size: var(--step-1);
-    font-weight: 300;
-    letter-spacing: var(--tracking-support);
     line-height: 1.5;
     color: var(--ink-2);
-    max-width: 30ch;
+    max-width: 42ch;
   }
-  .specimen__notes {
-    align-self: end;
+  .about__stickers {
+    position: relative;
+    min-height: 26rem;
+  }
+  .sticker {
+    position: absolute;
+    margin: 0;
+    padding: 0.7rem 0.7rem 0.9rem;
+    background: var(--white);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lifted);
+  }
+  .sticker figcaption {
+    margin-top: 0.6rem;
     font-size: var(--step--1);
-    display: grid;
-    gap: var(--space-xs);
-    margin: 0;
+    text-align: center;
   }
-  .specimen__notes div {
-    display: grid;
-    grid-template-columns: 5rem 1fr;
+  .sticker--photo {
+    width: 64%;
+    left: 0;
+    top: 0;
+    rotate: -4deg;
   }
-  .specimen__notes dt {
+  .sticker--pixel {
+    width: 52%;
+    right: 0;
+    bottom: 0;
+    rotate: 5deg;
+  }
+  .sticker__ph {
+    aspect-ratio: 4 / 5;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    background: var(--paper);
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    text-transform: uppercase;
+    font-size: 1.8rem;
+    line-height: 0.9;
     color: var(--ink-2);
   }
-  .specimen__notes dd {
-    margin: 0;
-  }
-  .specimen__body {
-    grid-column: 1;
-    margin-top: var(--space-l);
-  }
-
-  /* ---------- Quote: spacious, pushed off-centre ---------- */
-  .quote-band {
-    padding-block: var(--space-2xl) calc(var(--space-2xl) * 1.3);
-  }
-  .quote {
-    margin-block: 0;
-  }
-  .quote p {
-    margin-left: auto;
-    max-width: 22ch;
-    font-size: clamp(2rem, 1.4rem + 2.6vw, 3.6rem);
-    font-weight: 300;
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-    color: var(--ink-2);
-  }
-  .quote .strong {
-    font-weight: 600;
+  .sticker__ph--pixel {
+    aspect-ratio: 1;
+    background:
+      conic-gradient(from 90deg at 1px 1px, transparent 90deg, rgb(11 22 32 / 0.12) 0) 0 0 / 16px 16px,
+      var(--mint);
     color: var(--ink);
   }
 
-  /* ---------- Palette: tight ---------- */
-  .palette {
-    padding-bottom: var(--space-xl);
+  /* ---------- quote band ---------- */
+  .quote-band {
+    position: relative;
+    isolation: isolate;
+    background: var(--accent);
+    padding-block: var(--space-3xl);
+  }
+  .quote-band blockquote {
+    margin-block: 0;
+  }
+  .quote-band p {
+    max-width: none;
+    margin: 0;
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    text-transform: uppercase;
+    font-size: clamp(2.6rem, 1.2rem + 6vw, 7.2rem);
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+  .quote__soft {
+    font-weight: 500;
+    display: block;
+  }
+
+  /* ---------- key ---------- */
+  .key {
+    padding-block: var(--space-xl);
   }
   .swatches {
     list-style: none;
     padding: 0;
-    margin: var(--space-m) 0 0;
+    margin: 0 0 var(--space-m);
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
     gap: var(--space-s);
   }
   .swatches li {
     display: grid;
-    gap: 0.15rem;
+    gap: 0.1rem;
     font-size: var(--step--1);
   }
   .swatch {
-    height: 3.5rem;
-    border-radius: 8px;
-    box-shadow: var(--shadow-raised);
-    margin-bottom: var(--space-2xs);
+    height: 4rem;
+    border-radius: var(--radius-inset);
+    box-shadow: inset 0 0 0 1px rgb(11 22 32 / 0.1);
+    margin-bottom: 0.4rem;
   }
-  .hex {
+  .swatch__name {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-variation-settings: var(--wdth-heading);
+  }
+  .swatch__note {
+    color: var(--ink-2);
+  }
+  .key__type {
+    font-size: var(--step--1);
     color: var(--ink-2);
   }
 
+  /* ---------- world switch (review only) ---------- */
+  .world-switch {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 40;
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border-radius: var(--radius-chip);
+    background: var(--ink);
+    box-shadow: var(--shadow-lifted);
+  }
+  .world-switch button {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 0;
+    border-radius: var(--radius-chip);
+    padding: 0.45rem 0.9rem;
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+  }
+  .world-switch button[aria-pressed='true'] {
+    background: var(--white);
+    color: var(--ink);
+  }
+
   @media (max-width: 60rem) {
-    .work {
-      grid-template-areas:
-        'intro intro intro intro intro intro intro intro intro intro intro intro'
-        'flag flag flag flag flag flag flag flag flag flag flag flag'
-        'grid grid grid grid grid grid grid grid grid grid grid grid';
-      margin-top: calc(-1 * clamp(2rem, 6vw, 4rem));
+    .section-head {
+      grid-template-columns: minmax(0, 1fr) auto;
     }
-    .work__intro {
-      padding-bottom: 0;
+    .section-head .support {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      margin-top: var(--space-s);
     }
-    .work__grid {
-      grid-template-columns: minmax(0, 1fr);
-      margin-left: 0;
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .specimen {
+    .about {
       grid-template-columns: minmax(0, 1fr);
     }
-    .specimen__notes {
+    .about__stickers {
+      min-height: 24rem;
+      max-width: 26rem;
+    }
+  }
+  @media (max-width: 40rem) {
+    .bento {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .bento__flag,
+    .bento__wide {
+      grid-column: auto;
+      grid-row: auto;
+    }
+    .evidence {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .block {
+      min-height: 0;
+    }
+    .block__title {
       margin-top: var(--space-m);
-    }
-    .flagship {
-      padding: var(--space-m);
     }
   }
 </style>

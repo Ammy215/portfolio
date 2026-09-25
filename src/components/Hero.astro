@@ -4,58 +4,67 @@ import { layers, nodes, hubs } from '../data/graph';
 const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l.id)! }));
 ---
 
-<section class="hero" aria-labelledby="hero-title">
-  <!-- Atmosphere: two channel hues bleeding in off-centre, under paper grain.
-       Same idea as the 3D piece (noise becoming signal), present even before WebGL loads. -->
-  <div class="hero__atmos grain" aria-hidden="true"></div>
+<section class="hero grain" aria-labelledby="hero-title">
+  <!-- 3D diorama fills the section; everything readable is HTML on top of it -->
+  <div class="hero__stage" data-hero-stage>
+    <canvas class="hero__canvas" aria-hidden="true"></canvas>
+    <div class="hero__labels" data-hero-labels>
+      {nodes.map((n) => (
+        <a class="sign" href={`/projects/${n.slug}`} data-slug={n.slug} data-zone={n.zone}>
+          <span class:list={['sign__sq', n.inProgress ? 'sign__sq--progress' : `sign__sq--${n.zone}`]}></span>
+          {n.name}
+        </a>
+      ))}
+    </div>
+  </div>
 
-  <div class="hero__inner">
-    <div class="hero__text">
-      <h1 id="hero-title">Ammar<br /> Badlawala</h1>
-      <p class="hero__tagline">
-        <span class="strong">Cybersecurity × Networking × AI.</span>{' '}I build things to understand them, break them to learn how they fail, and automate what I can to make them better.
+  <header class="topbar wrap">
+    <a class="topbar__mark" href="/">Ammar Badlawala</a>
+    <nav aria-label="Main">
+      <ul class="topbar__nav">
+        <li><a href="#work">Work</a></li>
+        <li><a href="/roadmap">Roadmap</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="hero__copy wrap">
+    <p class="tag hero__tag">cybersecurity × networking × ai</p>
+    <h1 id="hero-title">Ammar<br /> Badlawala</h1>
+    <div class="hero__aside">
+      <p class="hero__lede">
+        I build things to understand them, break them to learn how they fail, and automate what I can to make them better.
       </p>
-      <p class="hero__status data">B.Sc. IT graduate, early career, shipping real security tools</p>
+      <p class="hero__meta">B.Sc. IT graduate, early career, shipping real security tools.</p>
       <div class="hero__actions">
-        <a class="btn btn--solid" href="#work">See what I've shipped</a>
+        <a class="btn btn--ink" href="#work">See the work</a>
         <a class="btn" href="#about">About me</a>
       </div>
     </div>
+  </div>
 
-    <figure class="hero__viz" aria-labelledby="viz-caption">
-      <div class="hero__stage" data-hero-stage>
-        <canvas class="hero__canvas" aria-hidden="true"></canvas>
-        <div class="hero__labels" data-hero-labels>
-          {nodes.map((n) => (
-            <a class:list={['node-label', `node-label--${n.inProgress ? 'alert' : n.channel}`]} href={`/projects/${n.slug}`} data-slug={n.slug}>
-              {n.name}
-            </a>
-          ))}
-        </div>
-      </div>
-      <figcaption id="viz-caption" class="hero__caption">
-        Seven separate projects, each placed on the defense layer it covers: first contact on the outside, correlation at the centre. Arcs are real shared dependencies.
-      </figcaption>
+  <p class="hero__hint data" aria-hidden="true">hover a station to explore</p>
 
-      <!-- Same data as text: shown when WebGL isn't available, always available to screen readers. -->
-      <div class="hero__fallback" data-hero-fallback>
-        <ol class="layer-list">
-          {byLayer.map((l) => (
-            <li>
-              <span class="data">{l.label}</span>
-              <a href={`/projects/${l.node.slug}`}>{l.node.name}</a>
-            </li>
-          ))}
-        </ol>
-        <ul class="hub-list">
-          {hubs.map((h) => (
-            <li>
-              <span class="data">{h.label}</span>: shared by {h.projects.map((s) => nodes.find((n) => n.slug === s)!.name).join(', ')}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </figure>
+  <!-- Same map as text: shown when WebGL isn't available, always available to screen readers. -->
+  <div class="hero__fallback wrap" data-hero-fallback>
+    <p class="hero__fallback-title">Seven projects, placed where each one sits in a defense:</p>
+    <ol class="layer-list">
+      {byLayer.map((l) => (
+        <li>
+          <span class="data">{l.label}</span>
+          <a href={`/projects/${l.node.slug}`}>{l.node.name}</a>
+        </li>
+      ))}
+    </ol>
+    <ul class="hub-list">
+      {hubs.map((h) => (
+        <li>
+          <span class="data">{h.label}</span>: shared by {h.projects.map((s) => nodes.find((n) => n.slug === s)!.name).join(', ')}
+        </li>
+      ))}
+    </ul>
   </div>
 </section>
 
@@ -89,76 +98,25 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
   .hero {
     position: relative;
     isolation: isolate;
-    overflow-x: clip;
-    /* room for the next section to overlap the hero's lower edge */
-    padding-bottom: var(--hero-overlap, 0px);
+    overflow: clip;
+    min-height: clamp(38rem, 100svh, 64rem);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    /* one hue floods the whole scene: deeper at the top, paling toward the ground line */
+    background:
+      radial-gradient(70% 55% at 72% 38%, rgb(255 255 255 / 0.28), transparent 70%),
+      linear-gradient(172deg, var(--world-deep) 0%, var(--world) 45%, var(--world-pale) 100%);
+    color: var(--ink);
+  }
+  .hero.grain::after {
+    z-index: 0;
   }
 
-  .hero__atmos {
+  /* ---- stage ---- */
+  .hero__stage {
     position: absolute;
     inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(55% 60% at 84% 16%, rgb(56 189 248 / 0.3), transparent 72%),
-      radial-gradient(40% 45% at 64% 58%, rgb(57 255 136 / 0.17), transparent 70%),
-      radial-gradient(30% 40% at 8% 0%, rgb(56 189 248 / 0.1), transparent 70%),
-      var(--ground);
-    /* the wash ends on a slant rather than a flat line */
-    clip-path: polygon(0 0, 100% 0, 100% 72%, 0 100%);
-  }
-
-  .hero__inner {
-    width: min(100% - 2rem, var(--page-max));
-    margin-inline: auto;
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: var(--space-l);
-    /* deliberately NOT centred: the text sits high, the diagram hangs lower */
-    align-items: start;
-    padding-top: clamp(2.5rem, 7vh, 5rem);
-  }
-
-  .hero__text {
-    padding-top: clamp(1.5rem, 6vh, 4.5rem);
-    position: relative;
-    z-index: 1;
-  }
-  .hero__text h1 {
-    font-size: clamp(3.2rem, 2rem + 5.4vw, 6.4rem);
-    margin-bottom: var(--space-m);
-  }
-  .hero__tagline {
-    font-size: var(--step-1);
-    font-weight: 300;
-    line-height: 1.5;
-    letter-spacing: var(--tracking-support);
-    color: var(--ink-2);
-    max-width: 34ch;
-  }
-  .hero__tagline .strong {
-    font-weight: 500;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-  }
-  .hero__status {
-    font-size: var(--step--1);
-    color: var(--ink-2);
-  }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-s);
-    margin-top: var(--space-l);
-  }
-
-  .hero__viz {
-    margin: 0;
-    /* break the grid: the diagram runs past the content margin to the viewport edge */
-    margin-right: calc((min(100vw - 2rem, var(--page-max)) - 100vw) / 2);
-  }
-  .hero__stage {
-    position: relative;
-    aspect-ratio: 5 / 4;
+    z-index: 0;
     display: none;
   }
   .hero__stage.is-live {
@@ -167,62 +125,181 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
   .hero__canvas {
     width: 100%;
     height: 100%;
-    /* incoming noise fades in from the edges instead of being clipped by the canvas box */
-    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
   }
   .hero__labels {
     position: absolute;
     inset: 0;
     opacity: 0;
     pointer-events: none;
+    z-index: 2;
   }
-  .node-label {
+  .sign {
     position: absolute;
     left: 0;
     top: 0;
-    margin: 0.7rem 0 0 0.6rem;
-    font-family: var(--font-data);
-    font-size: var(--step--1);
-    line-height: 1;
-    padding: 0.35rem 0.5rem;
-    border-radius: var(--radius-chip);
-    background: var(--panel);
-    color: var(--ink);
-    text-decoration: none;
-    box-shadow: var(--shadow-raised);
-    pointer-events: auto;
-    white-space: nowrap;
+    translate: -50% -100%;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
+    padding: 0.4rem 0.8rem 0.42rem 0.6rem;
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--ink);
+    font-weight: 800;
+    font-variation-settings: var(--wdth-heading);
+    font-size: 0.95rem;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: var(--shadow-raised);
+    pointer-events: auto;
+    transition: background-color 150ms, color 150ms, scale 150ms;
   }
-  .node-label::before {
+  /* post of the signpost */
+  .sign::after {
     content: '';
-    width: 0.45rem;
-    height: 0.45rem;
-    background: currentColor;
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 3px;
+    height: 0.9rem;
+    translate: -50% 0;
+    background: var(--white);
   }
-  .node-label[data-side='left'] {
-    translate: -100% 0;
-    margin-left: -0.6rem;
+  .sign__sq {
+    width: 0.6rem;
+    height: 0.6rem;
+    box-shadow: inset 0 0 0 1.5px var(--ink);
   }
-  .node-label--signal::before { background: var(--signal); }
-  .node-label--link::before { background: var(--link); }
-  .node-label--alert::before { background: var(--alert); }
-  .node-label:hover,
-  .node-label:focus-visible {
+  .sign__sq--outside { background: var(--cyan); }
+  .sign__sq--inside { background: var(--mint); }
+  .sign__sq--core { background: var(--mint); }
+  .sign__sq--progress { background: var(--amber); }
+  .sign:hover,
+  .sign:focus-visible,
+  .sign.is-active {
     background: var(--ink);
-    color: var(--ground);
+    color: var(--white);
+    scale: 1.06;
+  }
+  .sign:hover::after,
+  .sign:focus-visible::after,
+  .sign.is-active::after {
+    background: var(--ink);
   }
 
-  .hero__caption {
+  /* ---- top bar ---- */
+  .topbar {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-m);
+    padding-block: var(--space-m);
+  }
+  .topbar__mark {
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    font-size: 1.35rem;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .topbar__nav {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0.3rem;
+    border-radius: var(--radius-chip);
+    background: rgb(255 255 255 / 0.55);
+    backdrop-filter: blur(8px);
+  }
+  .topbar__nav a {
+    display: block;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-chip);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+  .topbar__nav a:hover {
+    background: var(--white);
+  }
+
+  /* ---- copy: bottom-left, big and tight, with small support beside it ---- */
+  .hero__copy {
+    position: relative;
+    z-index: 3;
+    grid-row: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: clamp(2rem, 6vh, 4.5rem);
+    pointer-events: none;
+  }
+  .hero__copy > * {
+    pointer-events: auto;
+  }
+  .hero__tag {
+    margin-bottom: var(--space-m);
+  }
+  .hero__copy h1 {
+    margin: 0 0 var(--space-m);
+    /* sized so BADLAWALA fills the left column (~42vw) and never runs into the diorama */
+    font-size: clamp(4.2rem, 0.8rem + 8.6vw, 10.5rem);
+    line-height: 0.84;
+    letter-spacing: -0.01em;
+  }
+  .hero__aside {
+    max-width: 27rem;
+  }
+  .hero__lede {
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    margin-bottom: var(--space-s);
+  }
+  .hero__meta {
     font-size: var(--step--1);
+    font-weight: 450;
     color: var(--ink-2);
-    max-width: 50ch;
-    margin: var(--space-xs) 0 0 auto;
-    padding-right: var(--space-l);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-m);
   }
 
+  .hero__hint {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(1.25rem, 3vh, 2rem);
+    z-index: 3;
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--ink);
+    opacity: 0.8;
+  }
+
+  /* ---- fallback (no WebGL) ---- */
+  .hero__fallback {
+    position: relative;
+    z-index: 3;
+    grid-row: 2;
+    align-self: center;
+    padding: var(--space-l);
+    border-radius: var(--radius-card);
+    background: rgb(255 255 255 / 0.6);
+  }
+  .hero__fallback-title {
+    font-weight: 700;
+  }
   .layer-list {
     list-style: none;
     padding: 0;
@@ -235,29 +312,41 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
     grid-template-columns: 9rem 1fr;
     gap: var(--space-s);
   }
-  .layer-list .data,
-  .hub-list .data {
-    color: var(--ink-2);
-  }
   .hub-list {
     padding-left: 1.1rem;
     font-size: var(--step--1);
   }
 
-  @media (max-width: 52rem) {
-    .hero__inner {
+  @media (max-width: 60rem) {
+    .hero {
+      grid-template-rows: auto minmax(52svh, 1fr) auto;
+    }
+    .hero__copy {
       grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--space-m);
     }
-    .hero__viz {
-      margin-right: -1rem;
-      margin-left: -1rem;
+    .hero__hint {
+      display: none;
     }
-    .hero__caption {
-      margin-left: 1rem;
-      padding-right: 1rem;
+    .topbar__nav a {
+      padding: 0.45rem 0.6rem;
     }
-    .hero__atmos {
-      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  }
+  @media (max-width: 36rem) {
+    .topbar__mark {
+      white-space: nowrap;
+      font-size: 1.15rem;
+    }
+    .topbar__nav a {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.85rem;
+    }
+  }
+  @media (max-width: 26rem) {
+    .topbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
     }
   }
 </style>
