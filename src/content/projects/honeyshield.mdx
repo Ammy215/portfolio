@@ -1,0 +1,36 @@
+---
+name: HoneyShield
+slug: honeyshield
+order: 5
+layer: deception
+status: partial
+statusLabel: HTTP trap live in production; SSH, FTP, Telnet built and tested, not deployed
+tagline: A multi-protocol honeypot with a correlation engine that spots coordinated attack campaigns by ASN and time window, not just single-IP brute force.
+stack:
+  - Python asyncio (raw sockets, no framework)
+  - raw SQLite3 (no ORM)
+  - Streamlit + Plotly dashboard
+  - argon2-hashed admin auth
+  - Gemini (gemini-flash-latest) AI analyst layer
+  - AbuseIPDB + AlienVault OTX enrichment
+repoUrl: https://github.com/Ammy215/Honeypot-system
+source: readme
+---
+
+## What it does
+
+HoneyShield runs decoy SSH, FTP, HTTP and Telnet services designed to look real enough that an attacker engages with them, then logs everything that happens. Its correlation engine goes past simple single-IP brute-force detection: it groups activity by ASN and time window to spot coordinated campaigns — the same actor, or the same botnet, hitting from a spread of IPs in a way that only shows up once you're looking at the pattern rather than any one connection.
+
+Every capture is enriched against AbuseIPDB and AlienVault OTX, and a Gemini-powered AI analyst layer sits on top to help interpret what the raw captures mean.
+
+## Where it actually stands
+
+The HTTP trap is genuinely live in production, catching real traffic. SSH, FTP and Telnet are built and tested — not stubs — but they are not currently deployed, because of a hosting constraint (the platform hosting the live deployment doesn't grant raw-socket access at the ports those protocols need), not a gap in the code.
+
+## Under the hood
+
+There's no framework or ORM here by choice — raw asyncio sockets and raw SQLite3, both hand-rolled. Security itself is layered with a three-role database model (owner, app, dashboard) enforced with row-level security, and admin authentication uses argon2 hashing.
+
+<aside>
+The live deployment stays private — happy to walk through the code or share access on request, the same as ThreatHunter.
+</aside>

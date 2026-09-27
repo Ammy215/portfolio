@@ -1,0 +1,37 @@
+---
+name: ThreatHunter
+slug: threathunter
+order: 3
+layer: intel
+status: live
+statusLabel: Live, repo stays private
+tagline: IOC lookups across IP, domain, hash and URL, fanned out to five real threat-intel providers, with 89 automated tests and a completed adversarial security pass behind it.
+stack:
+  - Next.js (App Router) + TypeScript
+  - Express + TypeScript
+  - Supabase (Postgres + Auth + RLS)
+  - Zod validation
+  - Groq (AI assistant over investigation history)
+  - AbuseIPDB, AlienVault OTX, IPInfo, VirusTotal, NIST NVD
+liveUrl: https://threat-hunter-dashboard.vercel.app
+repoNote: Repo stays private long-term — happy to walk through the code or share access on request.
+source: readme
+---
+
+## What it does
+
+ThreatHunter looks up an indicator of compromise — an IP, domain, file hash or URL — and fans that single query out across five real threat-intelligence providers at once: AbuseIPDB, AlienVault OTX, IPInfo, VirusTotal and the NIST National Vulnerability Database. A Groq-powered assistant sits on top, able to answer questions against your own investigation history rather than just returning raw provider output.
+
+## Architecture
+
+The frontend is Next.js on the App Router with TypeScript; the backend is Express, also TypeScript, backed by Supabase for Postgres, auth and row-level security, with Zod validating everything that crosses the boundary between them.
+
+It's a full 16-phase enterprise rebuild, and the engineering spec behind it is a real one: RS256 JWT authentication, timing-safe comparisons on anything security-sensitive, RFC 7807-shaped error responses, and CI with Trivy scanning dependencies for known vulnerabilities.
+
+## Adversarial testing
+
+The project has 89 automated tests across unit, integration and end-to-end coverage, plus a completed adversarial security-testing pass: 8 findings, each one fixed and then retested to confirm the fix actually held.
+
+<aside>
+The repo stays private long-term rather than going public — happy to walk through the code directly, or share repo access, on request.
+</aside>

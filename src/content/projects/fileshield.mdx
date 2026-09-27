@@ -1,0 +1,32 @@
+---
+name: FileShield
+slug: fileshield
+order: 6
+layer: files
+status: live
+statusLabel: Live
+tagline: My first shipped project — file intelligence via hashing, entropy analysis and YARA matching, and my first real production outage.
+stack:
+  - FastAPI + SQLAlchemy 2.0
+  - PostgreSQL
+  - React 18 + Vite + Tailwind + Framer Motion
+  - YARA matching
+  - Docker Compose (local dev only)
+liveUrl: https://metadata-and-file-analyzer.vercel.app
+repoUrl: https://github.com/Ammy215/Metadata-and-File-Analyzer
+source: readme
+---
+
+## What it does
+
+FileShield analyzes a file across hashing, entropy analysis and YARA rule matching, then rolls that up into a single weighted risk score — with an admin console for reviewing what's come through. It was my first shipped portfolio project, and the first one that had to survive contact with a real production environment rather than just a local dev server.
+
+## Architecture
+
+The backend is FastAPI with SQLAlchemy 2.0 over Postgres; the frontend is React 18 with Vite, Tailwind and Framer Motion for the interface motion. Docker Compose is used for local development — the one project where I've reached for Docker so far, everywhere else I've deliberately stuck to manual configuration for the learning. The deployed target is the more typical free-tier split: frontend on Vercel, backend on Render.
+
+## A real production outage, diagnosed and fixed
+
+Some time after launch, the original database — Neon, on its free tier — hit its compute-hour quota and the app went down. The root cause wasn't one thing: an uptime-monitoring bot, an open connection pool, and a background sweep job running frequently, together kept the database active near 24/7 until the free allowance ran out.
+
+The fix was threefold: startup retry logic so a cold or recovering database doesn't just crash the app on boot, a degraded-boot mode that lets the app come up in a limited but working state rather than failing outright, and a GitHub Actions–based keep-alive workflow that pings the app on a schedule Actions controls — instead of a continuous third-party ping service quietly running up the same compute-hour problem that caused the outage in the first place.

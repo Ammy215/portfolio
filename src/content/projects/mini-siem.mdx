@@ -1,0 +1,49 @@
+---
+name: Mini SIEM
+slug: mini-siem
+order: 1
+layer: correlation
+status: live
+statusLabel: Live in production
+tagline: A SIEM built from scratch — 11 auto-detected log formats, MITRE-tagged detection rules, and a gated attack lab that proves detection actually works.
+stack:
+  - FastAPI
+  - PostgreSQL (Neon)
+  - React 18 + Vite + Tailwind + shadcn/ui
+  - Recharts
+  - own JWT + bcrypt + RBAC (no third-party auth)
+  - AbuseIPDB + AlienVault OTX enrichment
+liveUrl: https://mini-siem-five.vercel.app
+repoUrl: https://github.com/Ammy215/Mini-SIEM
+source: readme
+---
+
+## What it does
+
+Mini SIEM ingests logs from servers, web servers, firewalls and Windows hosts — 11 formats, auto-detected rather than configured by hand — and normalizes them into one event shape in Postgres. From there it runs 15 threshold, signature and sequence detection rules, each tagged with a MITRE ATT&CK technique ID, and correlates an attacker's separate alerts into a single incident instead of leaving an analyst to piece them together.
+
+A custom rule builder lets new detections be added through the UI, a geo/business-hours risk scoring layer weighs how anomalous a login or request looks against where and when it came from, and a MITRE coverage matrix dashboard shows which techniques the rule set actually covers.
+
+## Architecture
+
+The backend is FastAPI over PostgreSQL, with authentication built from scratch — JWT plus bcrypt plus role-based access control, no Auth0 or Clerk in the loop. The frontend is React 18 with Vite, Tailwind and shadcn/ui, charting incident and alert data with Recharts.
+
+The project started as a 13-phase build and organically grew into 27 phases once the real scope of "a SIEM that actually detects things" became clear.
+
+## Proving detection actually works
+
+The system ships with a dev-only, gated **attack lab** — a way to fire real attacks (SQL injection, XSS, path traversal, brute force) at the running system and confirm the detection rules actually catch them, rather than trusting the rule engine on faith. It's verified 404/disabled in production, so it's a testing tool, not an attack surface.
+
+## Real problems, found and fixed
+
+Adversarial testing with that attack lab found a real detection gap: the signature rules weren't URL-decoding request input before matching against attack patterns, so 3 of 4 URL-encoded attack payloads were invisible to the system until the decoding step was added.
+
+A post-deployment security audit went further and found a genuine IP-spoofing vulnerability — forged `X-Forwarded-For` proxy headers could be used to bypass the rate limiter entirely. It was root-caused and fixed with a shared-secret validation pattern between the proxy and the app, then confirmed against real forged-header attempts against the live deployment.
+
+## Numbers
+
+600+ backend tests, running in CI against an ephemeral test database created fresh for each run.
+
+<aside>
+The first request to the backend after a quiet period can take 30–50 seconds while Render wakes it back up — that's the free-tier hosting, not the app.
+</aside>

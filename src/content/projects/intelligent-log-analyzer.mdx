@@ -1,0 +1,35 @@
+---
+name: Intelligent Log Analyzer
+slug: intelligent-log-analyzer
+order: 7
+layer: logs
+status: in-progress
+statusLabel: In progress — enterprise rebuild, final QA and deploy pending
+tagline: Parses SSH, Apache and Windows Event logs and scores brute force, port scans and credential stuffing with a weighted threat score. Mid-rebuild toward a multi-tenant version with auth, RBAC and billing.
+stack:
+  - FastAPI (async) + Motor (MongoDB) + Pydantic v2
+  - MongoDB Atlas (log storage)
+  - Supabase Postgres (auth/billing)
+  - Upstash Redis (caching/rate limiting)
+  - React 18 + Vite + Tailwind + Radix UI
+  - OpenAI API
+  - AbuseIPDB + AlienVault OTX enrichment
+repoUrl: https://github.com/Ammy215/Intelligent-Log-Analyzer
+source: ammar-direct
+---
+
+## What it does
+
+Intelligent Log Analyzer parses SSH, Apache and Windows Event logs and detects brute-force attempts, port scans and credential stuffing, scoring each one with a weighted threat score and enriching the result against AbuseIPDB and AlienVault OTX. It's functional today as a working analyzer.
+
+## Where it stands right now
+
+The project is mid-rebuild: an enterprise version across 12 phases, adding multi-tenancy, authentication, role-based access control and a credit-based billing system — a free monthly allowance plus non-expiring purchased credits, built against Razorpay in sandbox mode rather than a real billing account, since this is a portfolio piece and not a live business. That rebuild reached functional completeness pending a manual QA pass and final deployment, and hasn't been explicitly confirmed live since. Until it is, this stays flagged as in progress rather than upgraded to a "live" badge.
+
+## Architecture
+
+The backend is async FastAPI with Motor for MongoDB access and Pydantic v2 for validation, MongoDB Atlas for log storage, Supabase Postgres handling auth and billing state, and Upstash Redis for caching and rate limiting. The frontend is React 18 with Vite, Tailwind and Radix UI, and an OpenAI API integration powers the AI-assisted side of the analysis.
+
+## Accessibility
+
+Ahead of relaunch, the app passed a full WCAG AA accessibility audit with zero real contrast failures across all 13 pages.

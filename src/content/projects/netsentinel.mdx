@@ -1,0 +1,37 @@
+---
+name: NetSentinel
+slug: netsentinel
+order: 2
+layer: network
+status: live
+statusLabel: Live in production
+tagline: Upload a PCAP, get scored anomalies back — trained on real captured traffic, explained by a RAG-grounded AI analyst, not a black-box number.
+stack:
+  - FastAPI
+  - scikit-learn (Isolation Forest, One-Class SVM)
+  - Scapy + PyShark (packet capture)
+  - ChromaDB + LangGraph + Groq (RAG explanations)
+  - Supabase (Postgres, auth/RBAC)
+  - React 19 + Vite + Tailwind
+liveUrl: https://network-anomaly-detector-inky.vercel.app
+repoUrl: https://github.com/Ammy215/Network-Anomaly-Detector
+source: readme
+---
+
+## What it does
+
+NetSentinel takes a PCAP file, assembles it into flows, engineers features from those flows, and scores each one for anomaly against a learned baseline of "normal" — using Isolation Forest and One-Class SVM, trained on real captured network traffic rather than synthetic data. Where it goes further than a raw anomaly score is the explanation layer: a RAG-grounded AI pipeline (ChromaDB for retrieval, LangGraph to orchestrate it, Groq to run it) explains *why* a flow was flagged and suggests what an analyst should check next.
+
+## Architecture
+
+FastAPI and scikit-learn do the actual detection work; Scapy and PyShark handle packet capture and parsing. Supabase provides Postgres plus auth and role-based access control. The frontend is React 19 with Vite and Tailwind.
+
+Live packet capture itself runs local-only — free hosting doesn't grant a deployed app raw-socket access — so the hosted dashboard covers PCAP upload, ML scoring, AI investigation and threat-intel enrichment, all live and free, while continuous live capture is something you run on your own machine.
+
+## Real problems, found and fixed
+
+Early builds were cross-checked by hand against Wireshark's own analysis of the same captures, which is what caught two real parsing bugs: a TCP-flag comparison that was wrong, and an edge case in how FIN handshakes were being read.
+
+Pre-deployment testing surfaced and fixed five further real defects, including a race condition in how a flow's final verdict was assigned, and bearer tokens that were leaking into application logs.
+
+After deployment, hardening work found and fixed a real audit-log bug: IP addresses were being attributed incorrectly because of how the Cloudflare/Render proxy chain rewrites request headers. It was root-caused through the same kind of adversarial header testing used on Mini SIEM.

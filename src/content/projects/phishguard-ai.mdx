@@ -1,0 +1,32 @@
+---
+name: phishguard-ai
+slug: phishguard-ai
+order: 4
+layer: web
+status: local
+statusLabel: Runs locally, not deployed
+tagline: Hybrid phishing detection — a Random Forest model plus a 16-rule heuristic engine, live threat-intel checks, an explainable-AI chat endpoint, and a working Chrome extension, all runnable locally.
+stack:
+  - Flask
+  - Random Forest (scikit-learn) + 16-rule heuristic engine
+  - Google Safe Browsing, PhishTank, URLHaus
+  - explainable-AI chat endpoint
+  - React 19 + TypeScript + Radix UI
+  - Manifest V3 Chrome extension
+repoUrl: https://github.com/Ammy215/phishguard-ai
+source: ammar-direct
+---
+
+## What it does
+
+phishguard-ai scores a URL for phishing risk by combining two different approaches rather than trusting either alone: a Random Forest model trained on labeled phishing data, and a 16-rule heuristic engine checking the structural things a classifier can miss. That score is cross-checked against three live threat-intelligence feeds — Google Safe Browsing, PhishTank and URLHaus — and an explainable-AI chat endpoint can answer follow-up questions about why a particular URL was flagged.
+
+It ships as three parts: the Flask backend doing the actual scoring, a React 19 + TypeScript + Radix UI dashboard, and a Manifest V3 Chrome extension that brings the detection into the browser in real time rather than leaving it as a backend-only demo.
+
+## Where it actually runs
+
+The whole stack runs locally — the Flask API on `localhost:5000`, the dashboard via its own dev server, the extension loaded unpacked and pointed at that local API. It has never been deployed anywhere public; this is a deliberate, current state, not a "not yet" — the project is fully working and demoable, just not hosted.
+
+## Repo hygiene
+
+The repo history itself is a small case study in its own right: it recently had over 100MB of accidentally-committed bloat — `node_modules`, environment files, a duplicate dataset and an unused duplicate model — stripped out of git history entirely, not just deleted from the working tree going forward.
