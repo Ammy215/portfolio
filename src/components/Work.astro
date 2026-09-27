@@ -1,0 +1,228 @@
+---
+// Shipped work, as a colour-block bento. Content (name, status, stack, stats) comes from
+// src/content/projects/*.mdx — the single source of truth also used by each case-study page.
+// `layout` below is presentation-only art direction (which block gets which colour/size) and
+// carries no facts, so it lives here rather than in the content schema.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import UptimeDot from './UptimeDot.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+const layerLabel: Record<CollectionEntry<'projects'>['data']['layer'], string> = {
+  correlation: 'correlation',
+  network: 'network traffic',
+  intel: 'threat intel',
+  deception: 'deception',
+  web: 'web and urls',
+  files: 'files',
+  logs: 'logs',
+};
+
+const statusTag: Record<CollectionEntry<'projects'>['data']['status'], { cls: string; text: string }> = {
+  live: { cls: 'tag--live', text: 'live' },
+  partial: { cls: 'tag--partial tag--wrap', text: '' }, // uses statusLabel instead (HoneyShield's nuance)
+  local: { cls: 'tag--local', text: 'runs locally' },
+  'in-progress': { cls: 'tag--progress', text: 'in progress' },
+};
+
+// Presentation only: which slot each project fills in the bento, and its colour block.
+const layout: Record<string, { variant: string; span: 'flag' | 'wide' | ''; ghostTag?: boolean }> = {
+  'mini-siem': { variant: 'block--cyan', span: 'flag' },
+  netsentinel: { variant: 'block--ink', span: 'wide' },
+  honeyshield: { variant: 'block--amber', span: '' },
+  'intelligent-log-analyzer': { variant: 'block--wip', span: '' },
+  'phishguard-ai': { variant: 'block--mint', span: '' },
+  fileshield: { variant: '', span: '', ghostTag: true },
+  threathunter: { variant: 'block--pale', span: 'wide' },
+};
+---
+
+<section id="work" class="work wrap" aria-labelledby="work-title">
+  <header class="section-head">
+    <h2 id="work-title">Shipped<br /> work</h2>
+    <p class="support">
+      Seven platforms. Each one has a real story: what it does, what broke in testing, and how it got fixed.
+    </p>
+    <p class="section-head__count data" aria-hidden="true">{String(projects.length).padStart(2, '0')}</p>
+  </header>
+
+  <div class="bento">
+    {projects.map((p) => {
+      const L = layout[p.id] ?? { variant: '', span: '' };
+      const status = statusTag[p.data.status];
+      const isFlag = L.span === 'flag';
+      return (
+        <article class:list={['block', L.variant, L.span && `bento__${L.span}`]}>
+          <div class="block__top">
+            <span class:list={['tag', L.ghostTag && 'tag--ghost']}>{layerLabel[p.data.layer]}</span>
+            {status.text ? <span class:list={['tag', status.cls]}>{status.text}</span> : null}
+          </div>
+          <h3 class:list={['block__title', isFlag && 'block__title--xl']}>
+            <a class="block__link" href={`/projects/${p.id}/`}>{p.data.name}</a>
+          </h3>
+          <p class="block__go data">
+            <span>opens the case study</span>
+            {p.data.liveUrl && <UptimeDot url={p.data.liveUrl} />}
+          </p>
+          <p class:list={['block__lede', !isFlag && 'support']}>{p.data.tagline}</p>
+          {p.data.status === 'partial' && <span class="tag tag--partial tag--wrap">{p.data.statusLabel}</span>}
+          {isFlag && p.data.stats && (
+            <dl class="evidence">
+              {p.data.stats.map((s) => (
+                <div><dt>{s.value}</dt><dd>{s.label}</dd></div>
+              ))}
+            </dl>
+          )}
+          {isFlag && <p class="block__stack data">{p.data.stack.slice(0, 4).join(' / ')}</p>}
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .work {
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: var(--space-s);
+  }
+  .bento__flag {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .bento__wide {
+    grid-column: span 2;
+  }
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+    min-height: 15rem;
+    container-type: inline-size;
+  }
+  .block--pale {
+    background: var(--world-pale);
+  }
+  .block__go {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    position: relative;
+    z-index: 1;
+    margin: -0.2rem 0 0;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .block--ink .block__go {
+    color: rgb(255 255 255 / 0.75);
+  }
+  .tag--wrap {
+    white-space: normal;
+    border-radius: 12px;
+    line-height: 1.25;
+    align-self: flex-start;
+  }
+  .block__top {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+  }
+  .block__title {
+    margin: auto 0 0;
+    /* sized to the card, so long names like PHISHGUARD-AI stay on one line */
+    font-size: clamp(1.7rem, 12cqi, 3rem);
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    line-height: 0.9;
+  }
+  .block__title--xl {
+    font-size: clamp(3.2rem, 16cqi, 6.5rem);
+    line-height: 0.84;
+  }
+  .block__lede {
+    margin: 0;
+    font-weight: 450;
+    line-height: 1.45;
+    max-width: 44ch;
+  }
+  .bento__flag .block__lede {
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .block__stack {
+    margin: 0;
+    font-size: var(--step--1);
+  }
+  .block--ink .tag {
+    background: rgb(255 255 255 / 0.12);
+    color: var(--white);
+  }
+  .block--ink .tag::before {
+    box-shadow: none;
+  }
+  .block--ink .block__lede {
+    color: rgb(255 255 255 / 0.85);
+  }
+  /* in progress: construction stripes along the top, honest about the status */
+  .block--wip {
+    background:
+      repeating-linear-gradient(135deg, var(--amber) 0 14px, var(--ink) 14px 28px) top / 100% 10px no-repeat,
+      var(--white);
+    padding-top: calc(clamp(1.25rem, 1rem + 1vw, 2rem) + 10px);
+  }
+
+  .evidence {
+    margin: var(--space-xs) 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-xs);
+  }
+  .evidence div {
+    background: rgb(255 255 255 / 0.6);
+    border-radius: var(--radius-inset);
+    padding: 0.9rem 1rem;
+  }
+  .evidence dt {
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    font-size: clamp(2rem, 1.5rem + 1.6vw, 2.9rem);
+    line-height: 0.9;
+    margin-bottom: 0.35rem;
+  }
+  .evidence dd {
+    margin: 0;
+    font-size: var(--step--1);
+    line-height: 1.35;
+  }
+
+  @media (max-width: 60rem) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 40rem) {
+    .bento {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .bento__flag,
+    .bento__wide {
+      grid-column: auto;
+      grid-row: auto;
+    }
+    .evidence {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .block {
+      min-height: 0;
+    }
+    .block__title {
+      margin-top: var(--space-m);
+    }
+  }
+</style>

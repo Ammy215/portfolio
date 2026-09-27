@@ -1,17 +1,65 @@
 ---
+// Home — master brief §4: hero, shipped work, tech stack, about, roadmap teaser, connect.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Work from '../components/Work.astro';
+import Skills from '../components/Skills.astro';
+import About from '../components/About.astro';
+import RoadmapTeaser from '../components/RoadmapTeaser.astro';
+import Contact from '../components/Contact.astro';
+import { quoteById } from '../data/quotes';
 
+// This quote is always two sentences; split once here rather than with fragile string logic
+// that would need to change for a different quote later.
+const quote = quoteById('whole-thing');
+const [quoteSoft, quoteBold] = quote.text.split(/(?<=\.) /);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="Ammar Badlawala — Cybersecurity × Networking × AI"
+  description="B.Sc. IT graduate building toward security engineering by shipping real, working security platforms — a SIEM, a honeypot, a network anomaly detector, a phishing detector — then attacking them to learn how they fail."
+>
+  <Hero />
+  <Work />
+  <Skills />
+  <About />
+  <RoadmapTeaser />
+
+  <!-- One bold quote, full-bleed accent band — the one place besides About/footer this appears -->
+  <section class="quote-band grain" aria-label="Quote">
+    <blockquote class="wrap">
+      <p>
+        <span class="quote__soft">{quoteSoft}</span>
+        {quoteBold}
+      </p>
+    </blockquote>
+  </section>
+
+  <Contact />
+</BaseLayout>
+
+<style>
+  .quote-band {
+    position: relative;
+    isolation: isolate;
+    background: var(--accent);
+    padding-block: var(--space-3xl);
+  }
+  .quote-band blockquote {
+    margin-block: 0;
+  }
+  .quote-band p {
+    max-width: none;
+    margin: 0;
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    text-transform: uppercase;
+    font-size: clamp(2.6rem, 1.2rem + 6vw, 7.2rem);
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+  .quote__soft {
+    font-weight: 500;
+    display: block;
+  }
+</style>

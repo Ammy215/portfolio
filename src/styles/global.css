@@ -157,6 +157,36 @@ kbd,
   background: rgb(255 255 255 / 0.55);
 }
 
+/* Section header: huge left, small support right, an optional count/eyebrow far right.
+   Shared by every content section (Work, Skills, Roadmap teaser) so headers read as one system. */
+.section-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: clamp(1.5rem, 4vw, 4rem);
+  margin-bottom: var(--space-l);
+}
+.section-head h2 {
+  margin: 0;
+}
+.section-head .support {
+  margin: 0 0 0.6rem;
+}
+.section-head__count {
+  font-size: var(--step-2);
+  margin: 0 0 0.4rem;
+}
+@media (max-width: 60rem) {
+  .section-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .section-head .support {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: var(--space-s);
+  }
+}
+
 /* Colour-block cards */
 .block {
   position: relative;

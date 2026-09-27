@@ -1,0 +1,84 @@
+---
+// Master brief §4: "tech stack" gets its own Home section, distinct from About and the project
+// grid. Three honest tiers (src/data/skills.ts), never a percent bar or a "5/5 dots" rating —
+// none of that is a real, measurable claim.
+import { skillTiers, dockerNote } from '../data/skills';
+---
+
+<section id="skills" class="skills wrap" aria-labelledby="skills-title">
+  <header class="section-head">
+    <h2 id="skills-title">What I<br /> actually know</h2>
+    <p class="support">
+      Three honest tiers, not a checklist. Comfortable means I could demo it live; Exploring means I've read the docs, not shipped with it.
+    </p>
+  </header>
+
+  <div class="skills__grid">
+    {skillTiers.map((tier) => (
+      <div class="tier">
+        <h3 class="tier__label">{tier.label}</h3>
+        <p class="tier__desc">{tier.description}</p>
+        <ul class="tier__list">
+          {tier.skills.map((s) => (
+            <li>{s}</li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <p class="skills__note data">{dockerNote}</p>
+</section>
+
+<style>
+  .skills {
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .skills__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-m);
+    margin-top: var(--space-l);
+  }
+  .tier {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    padding: clamp(1.1rem, 0.9rem + 1vw, 1.75rem);
+    box-shadow: var(--shadow-raised);
+  }
+  .tier__label {
+    font-size: var(--step-1);
+    margin-bottom: 0.3rem;
+  }
+  .tier__desc {
+    color: var(--ink-2);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-m);
+  }
+  .tier__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tier__list li {
+    padding: 0.35rem 0.7rem;
+    border-radius: var(--radius-chip);
+    background: var(--paper);
+    font-family: var(--font-data);
+    font-size: var(--step--1);
+  }
+  .skills__note {
+    margin: var(--space-l) 0 0;
+    color: var(--ink-2);
+    font-size: var(--step--1);
+  }
+
+  @media (max-width: 60rem) {
+    .skills__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

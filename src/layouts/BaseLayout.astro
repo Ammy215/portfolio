@@ -1,6 +1,7 @@
 ---
 import { Font } from 'astro:assets';
 import Footer from '../components/Footer.astro';
+import { profile, links } from '../data/profile';
 import '../styles/global.css';
 
 interface Props {
@@ -11,6 +12,17 @@ interface Props {
 
 const { title, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Real profile facts only, sourced from src/data/profile.ts — same rule as everywhere else.
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  email: profile.email,
+  jobTitle: profile.tagline,
+  url: String(Astro.site),
+  sameAs: links.filter((l) => l.href.startsWith('http')).map((l) => l.href),
+};
 ---
 
 <!doctype html>
@@ -26,6 +38,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Font cssVariable="--font-archivo" preload />
     <Font cssVariable="--font-departure" />
+    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
     <slot name="head" />
   </head>
   <body>

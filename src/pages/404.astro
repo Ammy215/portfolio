@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found — Ammar Badlawala" description="This page doesn't exist." noindex>
+  <section class="notfound wrap">
+    <p class="tag tag--progress">404</p>
+    <h1>Nothing<br /> here.</h1>
+    <p class="support">
+      Whatever you were looking for isn't at this address. It might have moved, or the link might just be wrong.
+    </p>
+    <div class="notfound__actions">
+      <a class="btn btn--ink" href="/">Back to home</a>
+      <a class="btn" href="/#work">See the work</a>
+      <a class="btn" href="/roadmap/">Roadmap</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: var(--space-3xl);
+    min-height: 50svh;
+  }
+  .notfound h1 {
+    font-size: var(--step-4);
+    margin: var(--space-m) 0;
+  }
+  .notfound .support {
+    font-size: var(--step-1);
+    max-width: 48ch;
+  }
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+</style>

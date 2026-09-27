@@ -1,13 +1,14 @@
 ---
 import { profile, links, readme } from '../data/profile';
 import { nodes } from '../data/graph';
-import { projectHref, projectHrefLabel } from '../data/projects';
+import { quoteById } from '../data/quotes';
 
 const built = new Date();
 const year = built.getFullYear();
 const updated = built.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const isExternal = (href: string) => href.startsWith('http');
+const quote = quoteById('consistency');
 // Order the project list like the work section: flagship first
 const order = ['mini-siem', 'netsentinel', 'threathunter', 'phishguard-ai', 'fileshield', 'honeyshield', 'intelligent-log-analyzer'];
 const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
@@ -26,7 +27,7 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
         <a class="footer__name" href="/">{profile.name}</a>
         <p class="footer__tagline">{profile.tagline}</p>
         <blockquote class="footer__quote">
-          <p>Consistency doesn't ask how I feel about it. It just asks if I showed up.</p>
+          <p>{quote.text}</p>
         </blockquote>
       </div>
 
@@ -34,7 +35,7 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
         <p class="footer__label data">site</p>
         <ul>
           <li><a href="/#work">Work</a></li>
-          <li><a href="/roadmap">Roadmap</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
           <li><a href="/#about">About</a></li>
           <li><a href="/#contact">Contact</a></li>
         </ul>
@@ -45,8 +46,7 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
         <ul>
           {projects.map((p) => (
             <li>
-              <a href={projectHref(p.slug)} {...ext}>{p.name}</a>
-              <span class="footer__kind data">{projectHrefLabel(p.slug) === 'Live site' ? 'live' : 'code'}</span>
+              <a href={`/projects/${p.slug}/`}>{p.name}</a>
             </li>
           ))}
         </ul>
@@ -164,13 +164,6 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
   .footer__col a:hover {
     text-decoration-color: var(--world-deep);
   }
-  .footer__kind {
-    margin-left: 0.4rem;
-    white-space: nowrap;
-    font-size: 0.72rem;
-    color: var(--ink-2);
-  }
-
   .footer__base {
     display: flex;
     flex-wrap: wrap;

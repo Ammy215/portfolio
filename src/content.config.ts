@@ -22,6 +22,9 @@ const projects = defineCollection({
     liveUrl: z.string().url().optional(),
     repoUrl: z.string().url().optional(), // absent = private repo, no dead link
     repoNote: z.string().optional(), // e.g. ThreatHunter's "happy to walk through the code..."
+    // Flagship-only evidence trio (Mini SIEM's 27 phases / 600+ tests / 3-of-4). Optional so
+    // only the project that actually has punchy numbers carries this field.
+    stats: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
     // Every non-obvious claim traces to one of these. Checked off in the Phase 2 fact-check table.
     source: z.enum(['master-brief', 'readme', 'ammar-direct']),
   }),

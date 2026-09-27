@@ -1,0 +1,115 @@
+---
+// Master brief §6: "not-yet-built ideas, clearly separated from shipped work, framed as
+// direction not deliverables." No status badge implies progress anywhere on this page.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { flagshipRoadmap, roadmap } from '../data/roadmap';
+---
+
+<BaseLayout
+  title="Roadmap — Ammar Badlawala"
+  description="Not-yet-built ideas: direction, not deliverables. Led by an independent 3D network topology visualizer."
+>
+  <header class="hero wrap">
+    <p class="tag">not yet built</p>
+    <h1>The<br /> roadmap</h1>
+    <p class="support hero__lede">
+      Everything on this page is direction, not a delivery date. None of it is shipped — that's the whole point of keeping it on its own page, separate from the work above.
+    </p>
+  </header>
+
+  <section class="flagship wrap" aria-labelledby="flagship-title">
+    <div class="flagship__card">
+      <p class="tag tag--live">independent project</p>
+      <h2 id="flagship-title">{flagshipRoadmap.title}</h2>
+      <p class="flagship__blurb">{flagshipRoadmap.blurb}</p>
+    </div>
+  </section>
+
+  <section class="list wrap" aria-labelledby="list-title">
+    <h2 id="list-title" class="visually-hidden">Other ideas</h2>
+    <ul class="list__grid">
+      {roadmap.map((item) => (
+        <li class="list__item">{item.title}</li>
+      ))}
+    </ul>
+  </section>
+
+  <p class="back wrap"><a href="/">&larr; Back to shipped work</a></p>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+  .hero h1 {
+    font-size: var(--step-4);
+    margin: var(--space-m) 0;
+  }
+  .hero__lede {
+    max-width: 52ch;
+    font-size: var(--step-1);
+  }
+
+  .flagship {
+    padding-bottom: var(--space-xl);
+  }
+  .flagship__card {
+    background: var(--ink);
+    color: var(--white);
+    border-radius: var(--radius-card);
+    padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+    box-shadow: var(--shadow-lifted);
+  }
+  .flagship__card .tag {
+    background: rgb(255 255 255 / 0.12);
+    color: var(--white);
+  }
+  .flagship__card h2 {
+    margin: var(--space-s) 0 var(--space-m);
+    font-size: var(--step-3);
+  }
+  .flagship__blurb {
+    max-width: 62ch;
+    font-size: var(--step-1);
+    color: rgb(255 255 255 / 0.85);
+    margin: 0;
+  }
+
+  .list {
+    padding-bottom: var(--space-2xl);
+  }
+  .list__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-s);
+  }
+  .list__item {
+    background: var(--white);
+    border-radius: var(--radius-inset);
+    padding: 1.1rem 1.25rem;
+    font-weight: 550;
+    box-shadow: var(--shadow-raised);
+  }
+
+  .back {
+    padding-bottom: var(--space-2xl);
+  }
+  .back a {
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  @media (max-width: 60rem) {
+    .list__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 34rem) {
+    .list__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

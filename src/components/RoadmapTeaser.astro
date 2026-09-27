@@ -1,0 +1,89 @@
+---
+// Home teaser only — master brief §4. Direction, not deliverables: no status chips here.
+// The full list lives on /roadmap; this is intentionally small.
+import { flagshipRoadmap, roadmap } from '../data/roadmap';
+
+const preview = roadmap.slice(0, 4);
+---
+
+<section class="roadmap-teaser wrap" aria-labelledby="roadmap-teaser-title">
+  <header class="section-head">
+    <h2 id="roadmap-teaser-title">Where I'm<br /> headed</h2>
+    <p class="support">Not yet built — direction, not a delivery date.</p>
+    <a class="btn roadmap-teaser__all" href="/roadmap/">See the full roadmap</a>
+  </header>
+
+  <div class="roadmap-teaser__body">
+    <article class="flagship-card">
+      <p class="tag">independent project</p>
+      <h3>{flagshipRoadmap.title}</h3>
+      <p class="support">{flagshipRoadmap.blurb}</p>
+    </article>
+
+    <ul class="roadmap-teaser__list">
+      {preview.map((item) => (
+        <li>{item.title}</li>
+      ))}
+      <li class="roadmap-teaser__more"><a href="/roadmap/">and {roadmap.length - preview.length} more &rarr;</a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .roadmap-teaser {
+    padding-block: var(--space-xl);
+  }
+  .roadmap-teaser__all {
+    justify-self: end;
+    margin-bottom: 0.5rem;
+  }
+  .roadmap-teaser__body {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-m);
+    align-items: start;
+  }
+  .flagship-card {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    box-shadow: var(--shadow-raised);
+  }
+  .flagship-card h3 {
+    margin: 0.6rem 0 0.5rem;
+  }
+  .flagship-card .support {
+    max-width: none;
+  }
+  .roadmap-teaser__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .roadmap-teaser__list li {
+    padding: 0.8rem 1rem;
+    background: var(--paper);
+    border-radius: var(--radius-inset);
+    font-size: var(--step--1);
+    font-weight: 500;
+  }
+  .roadmap-teaser__more {
+    background: transparent;
+    padding-left: 0.2rem;
+    font-weight: 650;
+  }
+  .roadmap-teaser__more a {
+    text-decoration: none;
+  }
+
+  @media (max-width: 60rem) {
+    .roadmap-teaser__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .roadmap-teaser__all {
+      justify-self: start;
+    }
+  }
+</style>

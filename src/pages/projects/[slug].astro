@@ -1,0 +1,203 @@
+---
+// One case study per shipped project (master brief §4): what it does, architecture, real
+// decisions, real problems and fixes — then the honest links: live demo, code, or a note on
+// why there's neither (private repo, runs locally).
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import UptimeDot from '../../components/UptimeDot.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const statusMeta: Record<CollectionEntry<'projects'>['data']['status'], { cls: string; word: string }> = {
+  live: { cls: 'tag--live', word: 'live' },
+  partial: { cls: 'tag--partial', word: 'partially deployed' },
+  local: { cls: 'tag--local', word: 'runs locally' },
+  'in-progress': { cls: 'tag--progress', word: 'in progress' },
+};
+const status = statusMeta[data.status];
+
+const layerLabel: Record<CollectionEntry<'projects'>['data']['layer'], string> = {
+  correlation: 'Correlation',
+  network: 'Network traffic',
+  intel: 'Threat intel',
+  deception: 'Deception',
+  web: 'Web and URLs',
+  files: 'Files',
+  logs: 'Logs',
+};
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const i = all.findIndex((p) => p.id === entry.id);
+const next = all[(i + 1) % all.length];
+---
+
+<BaseLayout title={`${data.name} — Ammar Badlawala`} description={data.tagline}>
+  <article class="case wrap">
+    <header class="case__head">
+      <p class="case__eyebrow">
+        <a href="/#work">&larr; Shipped work</a>
+        <span aria-hidden="true">/</span>
+        <span>{layerLabel[data.layer]}</span>
+      </p>
+      <h1>{data.name}</h1>
+      <p class="case__tagline support">{data.tagline}</p>
+
+      <div class="case__meta">
+        <span class:list={['tag', status.cls]}>{status.word}</span>
+        <span class="case__status-label">{data.statusLabel}</span>
+      </div>
+
+      <div class="case__actions">
+        {data.liveUrl && (
+          <a class="btn btn--ink" href={data.liveUrl} target="_blank" rel="noopener noreferrer">
+            Live demo
+          </a>
+        )}
+        {data.repoUrl && (
+          <a class="btn" href={data.repoUrl} target="_blank" rel="noopener noreferrer">
+            View code
+          </a>
+        )}
+        {data.liveUrl && <UptimeDot url={data.liveUrl} />}
+      </div>
+      {data.repoNote && <p class="case__repo-note support">{data.repoNote}</p>}
+
+      <ul class="case__stack">
+        {data.stack.map((s) => (
+          <li class="data">{s}</li>
+        ))}
+      </ul>
+    </header>
+
+    <div class="case__body">
+      <Content />
+    </div>
+
+    <nav class="case__next" aria-label="Next project">
+      <a href={`/projects/${next.id}/`}>
+        <span class="case__next-label data">next up</span>
+        <span class="case__next-name">{next.data.name}</span>
+      </a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .case {
+    padding-block: var(--space-2xl) var(--space-2xl);
+    max-width: 68rem;
+  }
+  .case__head {
+    margin-bottom: var(--space-xl);
+  }
+  .case__eyebrow {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-family: var(--font-data);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    margin: 0 0 var(--space-m);
+  }
+  .case__eyebrow a {
+    text-decoration-thickness: 2px;
+  }
+  .case h1 {
+    font-size: var(--step-4);
+    margin-bottom: var(--space-s);
+  }
+  .case__tagline {
+    font-size: var(--step-1);
+    max-width: 62ch;
+  }
+  .case__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+    margin: var(--space-m) 0;
+  }
+  .case__status-label {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .case__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-s);
+  }
+  .case__repo-note {
+    font-size: var(--step--1);
+    max-width: 52ch;
+  }
+  .case__stack {
+    list-style: none;
+    margin: var(--space-m) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .case__stack li {
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-chip);
+    background: var(--white);
+    box-shadow: var(--shadow-raised);
+    font-size: var(--step--1);
+  }
+
+  .case__body {
+    max-width: 68ch;
+  }
+  .case__body :global(h2) {
+    font-size: var(--step-2);
+    margin-top: var(--space-xl);
+  }
+  .case__body :global(p) {
+    color: var(--ink-2);
+    line-height: 1.7;
+  }
+  .case__body :global(aside) {
+    display: block;
+    margin: var(--space-m) 0;
+    padding: var(--space-m);
+    background: var(--white);
+    border-radius: var(--radius-inset);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    box-shadow: var(--shadow-raised);
+  }
+
+  .case__next {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-l);
+    border-top: 2px solid var(--ink);
+  }
+  .case__next a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    text-decoration: none;
+  }
+  .case__next-label {
+    color: var(--ink-2);
+  }
+  .case__next-name {
+    font-size: var(--step-2);
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    text-transform: uppercase;
+  }
+</style>

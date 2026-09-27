@@ -7,13 +7,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   // TODO(phase 7): replace with the real production domain once Vercel assigns it.
   site: 'https://ammar-badlawala.vercel.app',
-  integrations: [
-    mdx(),
-    sitemap({
-      // Internal style tile is never indexed.
-      filter: (page) => !page.includes('/design'),
-    }),
-  ],
+  integrations: [mdx(), sitemap()],
   fonts: [
     {
       // One variable family for everything readable: condensed Black for display, normal width for body.
