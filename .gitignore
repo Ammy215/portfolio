@@ -33,3 +33,5 @@ pnpm-debug.log*
 portfolio-website-master-prompt.md
 reference/
 visual-reference-fix.md
+.vercel
+.env*

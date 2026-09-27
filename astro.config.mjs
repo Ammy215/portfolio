@@ -5,8 +5,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO(phase 7): replace with the real production domain once Vercel assigns it.
-  site: 'https://ammar-badlawala.vercel.app',
+  // First live deploy, 2026-09-27 (Vercel-assigned; a cleaner custom domain can replace this later).
+  site: 'https://ammar-portfolio-pi-puce.vercel.app',
   integrations: [mdx(), sitemap()],
   fonts: [
     {

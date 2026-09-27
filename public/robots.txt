@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ammar-badlawala.vercel.app/sitemap-index.xml
+Sitemap: https://ammar-portfolio-pi-puce.vercel.app/sitemap-index.xml
