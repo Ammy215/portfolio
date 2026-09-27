@@ -196,6 +196,11 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   renderer.setClearColor(0x000000, 0);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  // The scene is almost entirely static after the intro (a shadow depth pass is one of the more
+  // expensive things a frame does). Recompute every frame during the intro for correctness, then
+  // drop to a low rate — imperceptible for the small, slow idle motions (a spin, a bob, a scan
+  // sweep), and removes most of the per-frame GPU+CPU cost for the rest of the page's life.
+  renderer.shadowMap.autoUpdate = false;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(28, 1, 0.5, 120);
@@ -237,6 +242,10 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
     lift: number;
   }
   const order = ['honeyshield', 'netsentinel', 'phishguard-ai', 'threathunter', 'fileshield', 'intelligent-log-analyzer', 'mini-siem'];
+  // Objects that actually need a per-frame update (spin/scan/bob), collected once here instead
+  // of re-walking the whole scene graph every frame forever — the graph has 100+ nodes, this
+  // list has ~4. Also the ONLY thing keeping the renderer's shadow pass from safely idling.
+  const animated: THREE.Object3D[] = [];
   const stations: Station[] = order.map((slug, i) => {
     const d = defs[slug];
     const group = new THREE.Group();
@@ -248,7 +257,10 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
     group.add(top);
     const base = polar(d.angle, d.r);
     group.position.copy(base);
-    group.traverse((o) => (o.userData.slug = slug));
+    group.traverse((o) => {
+      o.userData.slug = slug;
+      if (o.userData.spin || o.userData.scan || o.userData.bob || o.userData.orbit) animated.push(o);
+    });
     world.add(group);
     return { slug, group, base, anchor: base.clone().setY(d.height + 1.9), delay: 0.08 + i * 0.1, lift: 0 };
   });
@@ -402,6 +414,7 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   function spawnHop(now: number) {
     const [, route] = routeList[Math.floor(Math.random() * routeList.length)];
     const m = mesh(packetGeo, hopMat);
+    m.castShadow = false; // moves too fast for the throttled shadow pass to track cleanly; skip it
     world.add(m);
     hops.push({ mesh: m, route: [...route, stationBySlug.get('mini-siem')!.anchor.clone().setY(1.2)], born: now });
   }
@@ -497,6 +510,8 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   // ---- frame ----
   const INTRO = 3.4; // seconds
   let t0 = 0;
+  let frame = 0;
+  let bricksSettled = false;
   function render(now: number) {
     const t = reducedMotion ? INTRO + 1 : (now - t0) / 1000;
     const settled = t >= INTRO;
@@ -513,7 +528,14 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
     }
     corePulse = Math.max(0, corePulse - 0.06);
 
-    placeBricks(t);
+    // Panels finish moving well before t reaches INTRO; stop recomputing after. But reduced-motion
+    // mode renders exactly one frame, already past "settled" — bricksSettled (not settled itself)
+    // guarantees that one frame still paints them, instead of leaving every panel at its untouched
+    // identity matrix.
+    if (!bricksSettled) {
+      placeBricks(t);
+      if (settled) bricksSettled = true;
+    }
     tiles.visible = t > 0.9;
     decor.forEach((d, i) => d.scale.setScalar(Math.max(0.0001, easeOutBack(clamp01((t - 0.9 - i * 0.03) / 0.4)))));
     wave.visible = t < 4.3;
@@ -525,9 +547,9 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
       arc.mat.opacity += ((lit ? 0.55 : 0) - arc.mat.opacity) * 0.15;
     }
 
-    // idle life
+    // idle life — iterate the short pre-collected list, not the whole (100+ node) scene graph
     const secs = now / 1000;
-    world.traverse((o) => {
+    for (const o of animated) {
       if (o.userData.spin) o.rotation.y = secs * 0.8;
       if (o.userData.scan) o.position.y = 0.3 + (Math.sin(secs * 1.3) + 1) * 0.55;
       if (o.userData.bob) o.position.y += Math.sin(secs * 2 + o.id) * 0.0015;
@@ -537,7 +559,7 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
         o.position.set(Math.cos(a) * orb.radius, orb.height + Math.sin(a * 2) * 0.1, Math.sin(a) * orb.radius);
         o.rotation.y = -a;
       }
-    });
+    }
 
     if (!reducedMotion) {
       if (settled && now - lastHop > 1300) {
@@ -565,6 +587,14 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
       camera.position.set(Math.cos(camAzimuth) * camDist, camHeight, Math.sin(camAzimuth) * camDist);
     }
     camera.lookAt(lookAt);
+
+    // Shadow depth pass: always on frame 0 (reduced-motion renders exactly one frame — without
+    // this the shadow map texture never gets created at all, and every shadow-receiving object
+    // renders black/invisible instead of just "shadowless"), every frame during the intro, then
+    // throttled to ~10fps — plenty for the small/slow idle motions, and the main saving that
+    // makes the idle scene cheap on a phone's CPU/GPU.
+    if (frame === 0 || !settled || frame % 6 === 0) renderer.shadowMap.needsUpdate = true;
+    frame++;
 
     renderer.render(scene, camera);
     placeLabels();

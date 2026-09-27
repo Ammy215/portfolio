@@ -35,3 +35,6 @@ reference/
 visual-reference-fix.md
 .vercel
 .env*
+
+# ad-hoc lighthouse reports
+scratch-lh*
