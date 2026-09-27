@@ -600,11 +600,23 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
     placeLabels();
   }
 
+  // A decorative background scene doesn't need to keep drawing ~80 individual meshes at full
+  // rate forever — that's most of what a mobile CPU/GPU was actually spending on this hero once
+  // the intro settled. Full rate while the intro plays (needs to look smooth); once idle, cap
+  // to a rate that still reads as "alive" (spin, scan sweep, hop packets) without costing much.
+  const IDLE_FRAME_MS = 1000 / 18;
+  let lastRender = 0;
   function loop(now: number) {
     if (!visible) {
       running = false;
       return;
     }
+    const settled = (now - t0) / 1000 >= INTRO;
+    if (settled && now - lastRender < IDLE_FRAME_MS) {
+      requestAnimationFrame(loop);
+      return;
+    }
+    lastRender = now;
     render(now);
     requestAnimationFrame(loop);
   }
