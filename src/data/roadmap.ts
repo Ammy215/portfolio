@@ -1,6 +1,6 @@
 // Not-yet-built ideas — master brief §6. Direction, not deliverables: no status badge here,
-// ever. The 3D visualizer gets its own longer framing (an independent ambition, not a promise);
-// everything else is a flat list.
+// ever. The AI SOC Analyst gets its own longer framing (the capstone that ties the shipped
+// projects together); everything else, including the 3D visualizer, is a flat list.
 export interface RoadmapItem {
   slug: string;
   title: string;
@@ -8,14 +8,13 @@ export interface RoadmapItem {
 }
 
 export const flagshipRoadmap: RoadmapItem = {
-  slug: '3d-network-topology-visualizer',
-  title: '3D Network Topology Visualizer',
+  slug: 'ai-soc-analyst-assistant',
+  title: 'AI SOC Analyst Assistant',
   blurb:
-    "My own independent project — not affiliated with any client or company work. Visualizing connected devices and network topology as an animated 3D scene mapped to a real physical space. I'm building this myself, and may eventually explore turning it into its own product. That's an ambition, not a promise.",
+    "The intelligence layer over everything I've already shipped: it pulls incidents from Mini SIEM, HoneyShield and NetSentinel, then uses RAG, AI agents and tool calling to investigate them — retrieving context, correlating evidence, and drafting a report. The AI investigates and recommends; I stay the one approving any action. Deliberately last to build, not first: it needs the SIEM, honeypot and anomaly detector underneath it to already exist before it has anything real to investigate.",
 };
 
 export const roadmap: RoadmapItem[] = [
-  { slug: 'ai-soc-analyst-assistant', title: 'AI SOC Analyst Assistant' },
   { slug: 'ai-threat-report-generator', title: 'AI Threat Report Generator' },
   { slug: 'malware-analysis-sandbox', title: 'Malware Analysis Sandbox' },
   { slug: 'fileless-malware-detector', title: 'Fileless Malware Detector' },
@@ -27,4 +26,5 @@ export const roadmap: RoadmapItem[] = [
   { slug: 'personal-cyber-lab-manager', title: 'Personal Cyber Lab Manager' },
   { slug: 'digital-forensics-toolkit', title: 'Digital Forensics Lite Toolkit' },
   { slug: 'room-based-learning-platform', title: 'A TryHackMe-style room-based learning platform, my own version' },
+  { slug: '3d-network-topology-visualizer', title: '3D Network Topology Visualizer' },
 ];
