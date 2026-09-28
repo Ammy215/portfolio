@@ -1,6 +1,5 @@
 ---
 import { profile, links, readme } from '../data/profile';
-import { nodes } from '../data/graph';
 import { quoteById } from '../data/quotes';
 
 const built = new Date();
@@ -9,9 +8,6 @@ const updated = built.toLocaleDateString('en-GB', { day: 'numeric', month: 'long
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const isExternal = (href: string) => href.startsWith('http');
 const quote = quoteById('consistency');
-// Order the project list like the work section: flagship first
-const order = ['mini-siem', 'netsentinel', 'threathunter', 'phishguard-ai', 'fileshield', 'honeyshield', 'intelligent-log-analyzer'];
-const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
 ---
 
 <footer class="footer">
@@ -38,17 +34,6 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
           <li><a href="/roadmap/">Roadmap</a></li>
           <li><a href="/#about">About</a></li>
           <li><a href="/#contact">Contact</a></li>
-        </ul>
-      </nav>
-
-      <nav class="footer__col" aria-label="Projects">
-        <p class="footer__label data">projects</p>
-        <ul>
-          {projects.map((p) => (
-            <li>
-              <a href={`/projects/${p.slug}/`}>{p.name}</a>
-            </li>
-          ))}
         </ul>
       </nav>
 
@@ -106,7 +91,7 @@ const projects = order.map((slug) => nodes.find((n) => n.slug === slug)!);
 
   .footer__panel {
     display: grid;
-    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr));
     gap: clamp(1.5rem, 4vw, 3.5rem);
     padding: clamp(1.5rem, 1rem + 2vw, 2.75rem);
     border-radius: var(--radius-card);
