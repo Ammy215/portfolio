@@ -43,6 +43,8 @@ The system ships with a dev-only, gated **attack lab** — a way to fire real at
 
 ## Real problems, found and fixed
 
+This testing was AI-directed: I set the scope, Claude Code did the actual investigating and patching, and I reviewed and verified every fix.
+
 Adversarial testing with that attack lab found a real detection gap: the signature rules weren't URL-decoding request input before matching against attack patterns, so 3 of 4 URL-encoded attack payloads were invisible to the system until the decoding step was added.
 
 A post-deployment security audit went further and found a genuine IP-spoofing vulnerability — forged `X-Forwarded-For` proxy headers could be used to bypass the rate limiter entirely. It was root-caused and fixed with a shared-secret validation pattern between the proxy and the app, then confirmed against real forged-header attempts against the live deployment.

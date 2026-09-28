@@ -30,7 +30,9 @@ Live packet capture itself runs local-only — free hosting doesn't grant a depl
 
 ## Real problems, found and fixed
 
-Early builds were cross-checked by hand against Wireshark's own analysis of the same captures, which is what caught two real parsing bugs: a TCP-flag comparison that was wrong, and an edge case in how FIN handshakes were being read.
+This testing was AI-directed: I set the scope, Claude Code did the actual investigating and patching, and I reviewed and verified every fix.
+
+Early builds were cross-checked against Wireshark's own analysis of the same captures, which is what caught two real parsing bugs: a TCP-flag comparison that was wrong, and an edge case in how FIN handshakes were being read.
 
 Pre-deployment testing surfaced and fixed five further real defects, including a race condition in how a flow's final verdict was assigned, and bearer tokens that were leaking into application logs.
 
