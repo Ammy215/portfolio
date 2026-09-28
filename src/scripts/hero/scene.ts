@@ -191,7 +191,17 @@ function buildFilter(g: THREE.Group) {
 
 // ---------- scene ----------
 export function initHero({ canvas, labels, reducedMotion }: Options) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    // MSAA is a real per-frame GPU cost on every phone, forever, for a scene that's deliberately
+    // flat-shaded and blocky already. Rendering at up to 2x device pixel ratio (below) already
+    // smooths edges enough that this isn't a visible loss.
+    antialias: false,
+    alpha: true,
+    // A decorative background element has no business requesting a phone's high-power/discrete
+    // GPU mode — that's a battery and thermal-throttling cost with no benefit here.
+    powerPreference: 'low-power',
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.shadowMap.enabled = true;
@@ -215,7 +225,9 @@ export function initHero({ canvas, labels, reducedMotion }: Options) {
   const sun = new THREE.DirectionalLight(0xffffff, 2.3);
   sun.position.set(-7, 16, 9);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  // 1024 halves the cost of every shadow pass occurrence vs. 2048, with no visible difference
+  // at this scene's actual size on screen.
+  sun.shadow.mapSize.set(1024, 1024);
   Object.assign(sun.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 1, far: 60 });
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = 0.03;
