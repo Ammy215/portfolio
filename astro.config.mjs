@@ -8,6 +8,9 @@ export default defineConfig({
   // First live deploy, 2026-09-27 (Vercel-assigned; a cleaner custom domain can replace this later).
   site: 'https://ammar-portfolio-pi-puce.vercel.app',
   integrations: [mdx(), sitemap()],
+  // Always external CSS files, never inlined — keeps the CSP's style-src to 'self' with no
+  // per-build inline-style hashes to maintain (see vercel.json).
+  build: { inlineStylesheets: 'never' },
   fonts: [
     {
       // One variable family for everything readable: condensed Black for display, normal width for body.
