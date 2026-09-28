@@ -1,0 +1,10 @@
+{
+  "_comment": "Checked-in fallback: real GitHub API values, last confirmed good. Used only when a build-time fetch fails (rate-limited, network down, etc). Not manually edited otherwise — a successful build's own values are trusted over this file whenever the live fetch works.",
+  "_lastVerified": "2026-09-29",
+  "mini-siem": { "pushedAt": "2026-09-24T16:54:37Z", "language": "Python" },
+  "netsentinel": { "pushedAt": "2026-09-23T06:43:19Z", "language": "Python" },
+  "fileshield": { "pushedAt": "2026-09-23T12:34:45Z", "language": "Python" },
+  "honeyshield": { "pushedAt": "2026-09-23T06:28:58Z", "language": "Python" },
+  "intelligent-log-analyzer": { "pushedAt": "2026-08-23T07:06:27Z", "language": "Python" },
+  "phishguard-ai": { "pushedAt": "2026-09-04T18:13:39Z", "language": "TypeScript" }
+}

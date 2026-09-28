@@ -5,8 +5,16 @@
 // carries no facts, so it lives here rather than in the content schema.
 import { getCollection, type CollectionEntry } from 'astro:content';
 import UptimeDot from './UptimeDot.astro';
+import { getGithubActivity } from '../lib/github';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+// Real GitHub activity, fetched at build time. Only projects with a public repoUrl are asked for
+// (ThreatHunter's repo is private, so it's simply absent from this map — no fetch, no label).
+const repoMap = Object.fromEntries(projects.filter((p) => p.data.repoUrl).map((p) => [p.id, p.data.repoUrl!]));
+const activity = await getGithubActivity(repoMap);
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const layerLabel: Record<CollectionEntry<'projects'>['data']['layer'], string> = {
   correlation: 'correlation',
@@ -51,6 +59,7 @@ const layout: Record<string, { variant: string; span: 'flag' | 'wide' | ''; ghos
       const L = layout[p.id] ?? { variant: '', span: '' };
       const status = statusTag[p.data.status];
       const isFlag = L.span === 'flag';
+      const github = activity[p.id];
       return (
         <article class:list={['block', L.variant, L.span && `bento__${L.span}`]}>
           <div class="block__top">
@@ -66,6 +75,11 @@ const layout: Record<string, { variant: string; span: 'flag' | 'wide' | ''; ghos
           </p>
           <p class:list={['block__lede', !isFlag && 'support']}>{p.data.tagline}</p>
           {p.data.status === 'partial' && <span class="tag tag--partial tag--wrap">{p.data.statusLabel}</span>}
+          {github && (
+            <p class="block__github data">
+              GitHub: pushed {formatDate(github.pushedAt)}{github.language && ` · ${github.language}`}
+            </p>
+          )}
           {isFlag && p.data.stats && (
             <dl class="evidence">
               {p.data.stats.map((s) => (
@@ -158,6 +172,14 @@ const layout: Record<string, { variant: string; span: 'flag' | 'wide' | ''; ghos
   .block__stack {
     margin: 0;
     font-size: var(--step--1);
+  }
+  .block__github {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .block--ink .block__github {
+    color: rgb(255 255 255 / 0.7);
   }
   .block--ink .tag {
     background: rgb(255 255 255 / 0.12);

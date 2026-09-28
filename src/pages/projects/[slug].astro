@@ -5,6 +5,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import UptimeDot from '../../components/UptimeDot.astro';
+import { getGithubActivity } from '../../lib/github';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -39,6 +40,14 @@ const layerLabel: Record<CollectionEntry<'projects'>['data']['layer'], string> =
 const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const i = all.findIndex((p) => p.id === entry.id);
 const next = all[(i + 1) % all.length];
+
+// Same shared, memoized fetch as Work.astro — passing the full repo map here too (not just this
+// page's own repo) means whichever page runs first does the one real fetch pass for everyone.
+const repoMap = Object.fromEntries(all.filter((p) => p.data.repoUrl).map((p) => [p.id, p.data.repoUrl!]));
+const activity = await getGithubActivity(repoMap);
+const github = activity[entry.id];
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
 <BaseLayout title={`${data.name} — Ammar Badlawala`} description={data.tagline}>
@@ -71,6 +80,11 @@ const next = all[(i + 1) % all.length];
         {data.liveUrl && <UptimeDot url={data.liveUrl} />}
       </div>
       {data.repoNote && <p class="case__repo-note support">{data.repoNote}</p>}
+      {github && (
+        <p class="case__github data">
+          GitHub: pushed {formatDate(github.pushedAt)}{github.language && ` · ${github.language}`}
+        </p>
+      )}
 
       <ul class="case__stack">
         {data.stack.map((s) => (
@@ -141,6 +155,11 @@ const next = all[(i + 1) % all.length];
   .case__repo-note {
     font-size: var(--step--1);
     max-width: 52ch;
+  }
+  .case__github {
+    margin: var(--space-xs) 0 0;
+    font-size: var(--step--1);
+    color: var(--ink-2);
   }
   .case__stack {
     list-style: none;
