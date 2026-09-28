@@ -92,14 +92,29 @@ const byLayer = layers.map((l) => ({ ...l, node: nodes.find((n) => n.layer === l
   })();
 
   if (stage && fallback && canvas && labels && hasWebGL2) {
-    stage.classList.add('is-live');
-    fallback.classList.add('visually-hidden');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // The fallback stays visible, and the stage hidden, until the scene has actually loaded and
+    // drawn something — not just as soon as we've decided WebGL is available in principle.
+    // Toggling both eagerly (the old behaviour) opened a real gap, sometimes over a second on a
+    // slow connection, where neither the accessible fallback nor any 3D content was visible.
     const boot = () =>
-      import('../scripts/hero/scene').then(({ initHero }) => initHero({ canvas, labels, reducedMotion }));
-    // keep Three.js off the critical path: text paints first
-    if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1200 });
-    else setTimeout(boot, 200);
+      import('../scripts/hero/scene').then(({ initHero }) => {
+        stage.classList.add('is-live');
+        fallback.classList.add('visually-hidden');
+        initHero({ canvas, labels, reducedMotion });
+      });
+    if (reducedMotion) {
+      // Reduced motion only ever draws one static frame — there's no continuous cost to keep
+      // off the critical path here, so there's no reason to add the idle-callback delay below.
+      // Deferring it anyway was the actual bug: it could leave the hero blank for over a second
+      // for exactly the visitors who have reduced motion on.
+      boot();
+    } else if ('requestIdleCallback' in window) {
+      // keep the full animated build off the critical path: text paints first
+      requestIdleCallback(boot, { timeout: 1200 });
+    } else {
+      setTimeout(boot, 200);
+    }
   }
 </script>
 
