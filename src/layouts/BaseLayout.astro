@@ -1,7 +1,8 @@
 ---
-import { Font } from 'astro:assets';
+import { Font, getImage } from 'astro:assets';
 import Footer from '../components/Footer.astro';
 import { profile, links } from '../data/profile';
+import photo from '../assets/photo-cropped.jpg';
 import '../styles/global.css';
 
 interface Props {
@@ -13,9 +14,10 @@ interface Props {
 const { title, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og-image.png', Astro.site);
+const photoOptimized = await getImage({ src: photo, width: 480 });
+const photoUrl = new URL(photoOptimized.src, Astro.site);
 
 // Real profile facts only, sourced from src/data/profile.ts — same rule as everywhere else.
-// No "image" field until a final photo crop is in place (see About.astro's photo sticker).
 const personLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -23,6 +25,7 @@ const personLd = {
   email: profile.email,
   jobTitle: profile.tagline,
   url: String(Astro.site),
+  image: String(photoUrl),
   sameAs: links.filter((l) => l.href.startsWith('http')).map((l) => l.href),
 };
 ---
