@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { profile, certifications, links } from '../data/profile';
 import photo from '../assets/photo-cropped.jpg';
+import pixelCharacter from '../assets/pixel-character.png';
 
 const tryhackme = links.find((l) => l.label === 'TryHackMe')!;
 ---
@@ -38,7 +39,13 @@ const tryhackme = links.find((l) => l.label === 'TryHackMe')!;
           <figcaption class="data">the real person</figcaption>
         </figure>
         <figure class="sticker sticker--pixel">
-          <div class="sticker__ph sticker__ph--pixel">Pixel<br />character</div>
+          <Image
+            src={pixelCharacter}
+            alt="Pixel-art avatar of Ammar Badlawala"
+            width={443}
+            height={443}
+            class="sticker__img sticker__img--pixel"
+          />
           <figcaption class="data">the build identity</figcaption>
         </figure>
       </div>
@@ -143,33 +150,18 @@ const tryhackme = links.find((l) => l.label === 'TryHackMe')!;
     align-self: end;
     rotate: 5deg;
   }
-  .sticker__ph {
-    aspect-ratio: 4 / 5;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    background: var(--paper);
-    font-weight: 900;
-    font-variation-settings: var(--wdth-display);
-    text-transform: uppercase;
-    font-size: 1.5rem;
-    line-height: 0.9;
-    color: var(--ink-2);
-  }
-  .sticker__ph--pixel {
-    aspect-ratio: 1;
-    background:
-      conic-gradient(from 90deg at 1px 1px, transparent 90deg, rgb(11 22 32 / 0.12) 0) 0 0 / 14px 14px,
-      var(--mint);
-    color: var(--ink);
-  }
   .sticker__img {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 5;
     border-radius: 12px;
     object-fit: cover;
+  }
+  .sticker__img--pixel {
+    aspect-ratio: 1;
+    background: var(--mint);
+    /* keep pixel art crisp/blocky when the browser scales it, not blurred */
+    image-rendering: pixelated;
   }
 
   .facts {
