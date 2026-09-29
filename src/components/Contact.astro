@@ -2,6 +2,9 @@
 import { profile, links } from '../data/profile';
 
 const external = (href: string) => href.startsWith('http');
+// Gmail web compose, not mailto: — works in any browser with no desktop mail client
+// configured (the common case), opening a new tab straight into a pre-addressed draft.
+const gmailCompose = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}`;
 ---
 
 <section id="contact" class="contact grain" aria-labelledby="contact-title">
@@ -15,7 +18,7 @@ const external = (href: string) => href.startsWith('http');
         I'm looking for an entry-level role in security engineering, SOC / detection, or networking. If you're hiring, or want a walkthrough of any of the code, email me or reach out on LinkedIn.
       </p>
       <div class="contact__mailrow">
-        <a class="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+        <a class="contact__email" href={gmailCompose} target="_blank" rel="noopener noreferrer">{profile.email}</a>
         <button class="btn contact__copy" type="button" data-copy={profile.email} hidden>Copy email</button>
         <span class="contact__copied data" aria-live="polite"></span>
       </div>
