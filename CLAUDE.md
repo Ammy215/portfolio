@@ -33,7 +33,8 @@ Personal portfolio: Home, one case-study page per shipped project, Roadmap. Sour
 - Job search: entry-level security engineering, SOC / detection, or networking roles.
 - ThreatHunter repo is private: "happy to walk through the code or share access on request."
 - Graph edges in `src/data/graph.ts` only from documented shared facts.
-- Blocked until Ammar supplies real input: TryHackMe stats card (needs screenshot — deliberately not built at all, not even as a placeholder, so nothing looks like real numbers before it exists), resume link (needs PDF), photo + pixel character (placeholders in About).
+- TryHackMe stats card (in About, after Certifications): real numbers from Ammar's screenshots (2026-09-29) — Top 25% rank, 20 rooms completed, 6 badges earned, plus a note that he's currently on the free "Cyber Security 101" path (28% complete). Deliberately excludes streak (0, not worth surfacing) and the in-app points/currency icon (ambiguous, not a real competency metric). Never mention that he's on the free tier by choice/cost — he said this only as context to Claude, not for the site.
+- Still blocked until Ammar supplies real input: resume link (needs PDF), photo's pixel-character partner tile (photo itself is done).
 - GitHub repo links (Mini-SIEM, Honeypot-system, Intelligent-Log-Analyzer, Metadata-and-File-Analyzer, Network-Anomaly-Detector, phishguard-ai, Ammy215/Ammy215) were all confirmed public earlier in the build; a later re-check hit a local network failure reaching github.com specifically (not a real site problem — re-verify opportunistically, don't block on it).
 
 ## Design (locked 2026-09-25)

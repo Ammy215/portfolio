@@ -1,7 +1,9 @@
 ---
 import { Image } from 'astro:assets';
-import { profile, certifications } from '../data/profile';
+import { profile, certifications, links } from '../data/profile';
 import photo from '../assets/photo-cropped.jpg';
+
+const tryhackme = links.find((l) => l.label === 'TryHackMe')!;
 ---
 
 <section id="about" class="about wrap" aria-labelledby="about-title">
@@ -60,6 +62,19 @@ import photo from '../assets/photo-cropped.jpg';
         </ul>
       </div>
     ))}
+  </div>
+
+  <div class="thm" aria-labelledby="thm-title">
+    <div class="thm__head">
+      <h3 id="thm-title" class="thm__title">TryHackMe</h3>
+      <a class="thm__link" href={tryhackme.href} target="_blank" rel="noopener noreferrer">View profile</a>
+    </div>
+    <dl class="thm__stats">
+      <div><dt>Top 25%</dt><dd>rank</dd></div>
+      <div><dt>20</dt><dd>rooms completed</dd></div>
+      <div><dt>6</dt><dd>badges earned</dd></div>
+    </dl>
+    <p class="thm__note support">Currently working through Cyber Security 101, the entry-level path — 28% complete.</p>
   </div>
 </section>
 
@@ -219,6 +234,55 @@ import photo from '../assets/photo-cropped.jpg';
     box-shadow: 0 1px 2px rgb(11 22 32 / 0.08);
   }
 
+  /* ---- TryHackMe ---- */
+  .thm {
+    margin-top: var(--space-xl);
+  }
+  .thm__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-s);
+    flex-wrap: wrap;
+  }
+  .thm__title {
+    font-size: var(--step-2);
+    margin: 0;
+  }
+  .thm__link {
+    font-size: var(--step--1);
+    font-weight: 650;
+    text-decoration-thickness: 2px;
+  }
+  .thm__stats {
+    margin: var(--space-m) 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-xs);
+  }
+  .thm__stats div {
+    background: var(--white);
+    border-radius: var(--radius-inset);
+    padding: 0.9rem 1rem;
+    box-shadow: var(--shadow-raised);
+  }
+  .thm__stats dt {
+    font-weight: 900;
+    font-variation-settings: var(--wdth-display);
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem);
+    line-height: 0.9;
+    margin-bottom: 0.35rem;
+  }
+  .thm__stats dd {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .thm__note {
+    margin: var(--space-s) 0 0;
+    font-size: var(--step--1);
+  }
+
   @media (max-width: 60rem) {
     .about__grid {
       grid-template-columns: minmax(0, 1fr);
@@ -227,6 +291,11 @@ import photo from '../assets/photo-cropped.jpg';
       max-width: 28rem;
     }
     .certs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 30rem) {
+    .thm__stats {
       grid-template-columns: minmax(0, 1fr);
     }
   }
