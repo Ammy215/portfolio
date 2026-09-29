@@ -109,9 +109,12 @@ const tryhackme = links.find((l) => l.label === 'TryHackMe')!;
   /* ---- side: stickers + facts ---- */
   .stickers {
     position: relative;
-    /* height follows width so the rotated stickers never spill onto the facts card */
-    aspect-ratio: 1 / 0.98;
-    margin-bottom: var(--space-l);
+    /* height follows width so the rotated stickers never spill onto the facts card below —
+       the fixed margin-bottom on top of the aspect-ratio is deliberate extra clearance: each
+       sticker's caption adds a small fixed height that doesn't shrink with the container, so
+       at narrow widths that fixed overhead needs a fixed buffer to still clear the next card */
+    aspect-ratio: 1 / 1.4;
+    margin-bottom: calc(var(--space-l) + 6rem);
   }
   .sticker {
     position: absolute;
