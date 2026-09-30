@@ -10,9 +10,7 @@ export const profile = {
     text: 'Intelligent Log Analyzer, enterprise rebuild',
     href: 'https://github.com/Ammy215/Intelligent-Log-Analyzer',
   },
-  // Resume: set to a real file path (e.g. '/Ammar-Badlawala-Resume.pdf' in public/) once the PDF exists.
-  // While null, no resume link or button renders anywhere.
-  resume: null as string | null,
+  resume: '/Ammar_Badlawala_Resume.pdf' as string | null,
 };
 
 export const links = [
